@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.el-button--primary {
+  background-color: #409eff;
+}
+
+.box-shadow-1 {
+  box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%);
+}
+
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+.card-header {
+  text-transform: uppercase;
+  background-color: #1f2d4f;
+  font-weight: 700;
+  color: white;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1em;
+}
