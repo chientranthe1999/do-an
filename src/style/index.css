@@ -2,8 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 1.25rem;
+}
+
 .el-button--primary {
   background-color: #409eff;
+}
+
+.el-button--success {
+  background-color: #498d3d;
 }
 
 .box-shadow-1 {
@@ -22,4 +33,12 @@
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1em;
+}
+
+// override css element-ui
+.el-radio {
+  text-align: center;
+}
+.el-radio__input {
+  display: none;
 }

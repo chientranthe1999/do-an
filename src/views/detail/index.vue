@@ -84,14 +84,21 @@
       <!-- Booking -->
       <el-col :sm="24" :md="8">
         <section>
-          <p class="font-bold text-[1.25rem] mb-[1em]">Đặt sân</p>
-
-          <el-radio-group>
-            <el-radio-button label="New York">10:00</el-radio-button>
-            <el-radio-button label="Washington">11:30</el-radio-button>
-            <el-radio-button label="Los Angeles"></el-radio-button>
-            <el-radio-button label="Chicago"></el-radio-button>
-          </el-radio-group>
+          <p class="font-bold text-[1.5rem] mb-[1em]">Đặt sân</p>
+          <div class="border rounded-lg p-[1em] border-[#e5e5e5] text-center">
+            <el-row :gutter="24" class="mb-[1em]">
+              <el-col :span="8">
+                <el-radio v-model="radio1" label="1" border class="w-full">10:00</el-radio>
+              </el-col>
+              <el-col :span="8">
+                <el-radio v-model="radio1" label="2" border class="w-full">20:00</el-radio>
+              </el-col>
+              <el-col :span="8">
+                <el-radio v-model="radio1" label="3" border class="w-full">8:00</el-radio>
+              </el-col>
+            </el-row>
+            <el-button type="primary" class="w-[140px]">Đặt sân</el-button>
+          </div>
         </section>
       </el-col>
     </el-row>
@@ -109,7 +116,12 @@
 </template>
 <script>
 export default {
-  name: 'Detail'
+  name: 'Detail',
+  data() {
+    return {
+      radio1: false
+    }
+  }
 }
 </script>
 <style lang="css">

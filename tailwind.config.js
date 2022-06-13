@@ -9,7 +9,8 @@ module.exports = {
     },
 
     colors: {
-      main: '#498d3d'
+      main: '#498d3d',
+      'black-50': '#e5e5e5'
     }
   },
   plugins: []
