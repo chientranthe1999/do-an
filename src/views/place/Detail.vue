@@ -4,12 +4,12 @@
       <el-col :sm="24" :md="16">
         <!-- main content -->
         <section class="detail-items">
-          <h2 class="font-bold text-[1.25rem]">Sân bóng đá Minh Kiệt Dương Nội - Hà Đông</h2>
+          <h2 class="font-bold text-[1.25rem]">{{ place.name }}</h2>
           <span><i class="el-icon-star-on text-[#fadb14]" v-for="i in 5" :key="i" /> (1 đánh giá)</span>
           <p class="mb-[1.5em]">
             <i class="el-icon-location" />
             <span>
-              Trường phổ thông quốc tế VIS, Aeon Mall Hà Đông, Nguyễn Hoàng Quyết, Dương Nội, Hà Đông, Hà Nội
+              {{ place.address }}
             </span>
           </p>
           <img class="w-full mb-[1em]" src="@/assets/imgs/banner1.jpg" />
@@ -104,22 +104,33 @@
     </el-row>
 
     <!-- near station -->
-    <section class="detail-items">
+    <!-- <section class="detail-items">
       <p class="card-header">Sân bóng đá gần sân Minh Kiệt Dương Nội</p>
       <el-row :gutter="24">
         <el-col :xs="12" :md="12" :sm="12" :lg="6" :xl="6" v-for="i in 4" :key="i" class="mb-[1em]">
           <v-card />
         </el-col>
       </el-row>
-    </section>
+    </section> -->
   </div>
 </template>
 <script>
+import { getPlaceById } from '@/api/place'
 export default {
   name: 'Detail',
+
+  async created() {
+    try {
+      const { data } = await getPlaceById(this.$route.params.id)
+      this.place = data.data
+    } catch (e) {
+      console.log(e)
+    }
+  },
   data() {
     return {
-      radio1: false
+      radio1: false,
+      place: {}
     }
   }
 }

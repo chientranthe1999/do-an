@@ -1,12 +1,11 @@
 import axios from 'axios'
-import store from '@/stores'
-import { getToken } from './auth'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
 
-const API_BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:8000'
+const API_BASE_URL = process.env.VUE_APP_API_BASE_URL
 
 // create an axios instance
 const service = axios.create({
-  withCredentials: true,
   baseURL: API_BASE_URL,
   timeout: process.env.VUE_APP_API_TIMEOUT || 60000 // request timeout
 })

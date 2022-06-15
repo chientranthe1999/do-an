@@ -1,15 +1,21 @@
 <template lang="html">
-  <div class="card-item cursor-pointer rounded-[4px]" @click="$router.push('/detail')">
-    <img class="w-full h-[200px]" src="@/assets/imgs/banner1.jpg" />
+  <div
+    class="card-item cursor-pointer rounded-[4px]"
+    @click="$router.push({ name: 'InforDetail', params: { id: initData.id } })"
+  >
+    <img class="w-full h-[200px]" :src="initData.imageDetails[0]" />
     <div class="card-content">
-      <p class="font-[700] text-lg pc:text-[1.25rem]">Tên sân bóng 1</p>
+      <p class="font-[700] text-lg pc:text-[1.25rem]">{{ initData.name }}</p>
+      <p class="">Địa chỉ: {{ initData.address }}</p>
       <div class="flex justify-between">
-        <p class="max-w-[70%]">Số người: 7</p>
+        <p class="max-w-[70%]">Số người: {{ initData.limitUsers }}</p>
         <div class="start">
           <span class="text-[#fadb14]"><i class="el-icon-star-on" /></span>
         </div>
       </div>
-      <p>Giá: <span class="text-[#3a6026] font-[700]">300000đ - 600000đ</span> / Trận</p>
+      <p>
+        Giá chỉ từ: <span class="text-[#3a6026] font-[700]">{{ initData.priceMin }}đ</span> / Trận
+      </p>
       <p class="flex justify-between">
         <span><i class="el-icon-check" />Wifi</span>
         <span><i class="el-icon-check" />Căng tin</span>

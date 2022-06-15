@@ -12,6 +12,8 @@ import '@/style/home.css'
 import ToastMessage from '@/utils/message'
 Vue.prototype.$vmess = ToastMessage
 
+// import '@/permission'
+
 import '@/components'
 
 import VueCarousel from 'vue-carousel'
