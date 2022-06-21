@@ -1,7 +1,7 @@
 <template lang="html">
-  <div class="main-container flex items-center justify-center h-[100vh] relative">
+  <div class="content-container flex items-center justify-center h-[100vh] relative">
     <div class="w-[520px] mx-auto p-[2em] box-shadow-1 rounded-lg bg-[white]">
-      <p class="uppercase font-bold text-[1.25rem] text-center mb-[2em]">Đăng nhập</p>
+      <p class="uppercase font-bold text-[1.25rem] text-center mb-[1em]">Đăng nhập</p>
       <el-form ref="form" :model="form" :rules="rules" auto-complete="off">
         <el-form-item label="Email" prop="email">
           <el-input v-model.trim="form.email" type="email" />
@@ -12,7 +12,14 @@
         </el-form-item>
       </el-form>
 
-      <el-button type="success" class="w-full" :loading="loading" @click.native.prevent="login">Đăng nhập</el-button>
+      <el-button type="success" class="w-full mb-[1em]" :loading="loading" @click.native.prevent="login">
+        Đăng nhập
+      </el-button>
+
+      <div>
+        Bạn chưa có tài khoản?
+        <span class="text-[#588bae]"><router-link to="/sign-up">Đăng ký ngay</router-link></span>
+      </div>
     </div>
   </div>
 </template>
@@ -72,8 +79,9 @@ export default {
   font-weight: 600;
 }
 
-.main-container {
+.content-container {
   margin-left: 0 !important;
+  width: 100vw;
   background: url('../../assets/login-bg.jpg') no-repeat;
   background-position: center;
   background-size: cover;

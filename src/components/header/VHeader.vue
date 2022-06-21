@@ -7,11 +7,16 @@
         <i class="el-icon-notebook-1" />
         <span>Tin tức</span>
       </p>
+
+      <p class="mr-[1.5em] hover:text-main cursor-pointer" @click="$router.push({ name: 'FindOpponent' })">
+        <i class="el-icon-search" />
+        <span>Tìm đối</span>
+      </p>
       <p class="mr-[1.5em] hover:text-main cursor-pointer">
         <i class="el-icon-s-goods" />
         <span>Giỏ hàng</span>
       </p>
-      <p class="mr-[1em] hover:text-main cursor-pointer">
+      <p class="mr-[1em] hover:text-main cursor-pointer" @click="$router.push({ name: 'Login' })">
         <i class="el-icon-s-custom" />
         <span>Đăng nhập</span>
       </p>

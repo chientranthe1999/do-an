@@ -9,7 +9,7 @@
       <!-- <p class="card-header">{{ item.name }}</p> -->
       <el-row :gutter="24" class="mb-[2em]">
         <el-col :xs="12" :md="12" :sm="12" :lg="6" :xl="6" class="mb-[1em]" v-for="i in 8" :key="i">
-          <NewsItem :init-data="place" />
+          <NewsItem />
         </el-col>
       </el-row>
     </section>

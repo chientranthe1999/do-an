@@ -29,17 +29,33 @@ const routes = [
         path: '',
         name: 'NewsList',
         component: () => import('@/views/news/List.vue')
+      },
+      {
+        path: 'detail',
+        name: 'NewsDetail',
+        component: () => import('@/views/news/Detail.vue')
       }
-      // {
-      //   path: 'detail/:id',
-      //   name: 'InforDetail',
-      //   component: () => import( '@/views/place/Detail')
-      // }
+    ]
+  },
+  {
+    path: '/find-opponent',
+    component: Home,
+    children: [
+      {
+        path: '',
+        name: 'FindOpponent',
+        component: () => import('@/views/opponent/List.vue')
+      },
+      {
+        path: 'detail',
+        name: 'NewsDetail',
+        component: () => import('@/views/news/Detail.vue')
+      }
     ]
   },
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -47,7 +63,7 @@ const routes = [
   },
   {
     path: '*',
-    component: () => import('@/views/Home'),
+    redirect: '/home',
     hidden: true
   }
 ]
