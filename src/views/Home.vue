@@ -41,7 +41,7 @@
               <el-input placeholder="Nhập vào tên sân" />
             </el-form-item>
           </el-col>
-          <el-col :xs="4" :sm="4" :md="3" :lg="3" :xl="3" class="mb-[1em] pc:mb-0">
+          <el-col :xs="24" :sm="24" :md="3" :lg="3" :xl="3" class="mb-[1em] pc:mb-0">
             <el-button type="success" class="w-full">Tìm kiếm</el-button>
           </el-col>
         </el-row>

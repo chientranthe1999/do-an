@@ -1,5 +1,5 @@
 <template lang="html">
-  <div>
+  <div v-loading="loading">
     <el-row :gutter="24">
       <el-col :sm="24" :md="16">
         <!-- main content -->
@@ -23,25 +23,6 @@
             cao tầng nên tâm nhìn của sân rất rộng. Sân rất nổi tiếng và là điểm tô chức nhiều giải bóng đá lớn dành cho
             phủi thủ khắp Hà thành
           </p>
-        </section>
-
-        <!-- service list -->
-        <section class="detail-items">
-          <p class="font-bold text-[1.25rem] mb-[1em]">Tiện tích tại sân</p>
-          <el-row>
-            <el-col :md="8" class="flex items-center h-[40px]">
-              <img class="h-[30px] mr-[0.25em]" src="@/icons/wifi.svg" />Wifi
-            </el-col>
-            <el-col :md="8" class="flex items-center h-[40px]">
-              <img class="h-[30px] mr-[0.25em]" src="@/icons/car.svg" />Giữ xe
-            </el-col>
-            <el-col :md="8" class="flex items-center h-[40px]">
-              <img class="h-[30px] mr-[0.25em]" src="@/icons/grocery.svg" />Căng tin
-            </el-col>
-            <el-col :md="8" class="flex items-center h-[40px]">
-              <img class="h-[30px] mr-[0.25em]" src="@/icons/livestream.svg" />Livestream
-            </el-col>
-          </el-row>
         </section>
 
         <!-- comment -->
@@ -81,62 +62,200 @@
           </div>
         </section>
       </el-col>
-      <!-- Booking -->
+      <!-- Booking time -->
       <el-col :sm="24" :md="8">
         <section>
           <p class="font-bold text-[1.5rem] mb-[1em]">Đặt sân</p>
           <div class="border rounded-lg p-[1em] border-[#e5e5e5] text-center">
-            <el-row :gutter="24" class="mb-[1em]">
-              <el-col :span="8">
-                <el-radio v-model="radio1" label="1" border class="w-full">10:00</el-radio>
-              </el-col>
-              <el-col :span="8">
-                <el-radio v-model="radio1" label="2" border class="w-full">20:00</el-radio>
-              </el-col>
-              <el-col :span="8">
-                <el-radio v-model="radio1" label="3" border class="w-full">8:00</el-radio>
+            <p class="font-bold text-[1.25rem] mb-[1em]">Chọn thời gian</p>
+
+            <el-date-picker
+              v-model="form.orderDay"
+              type="date"
+              placeholder="Pick a day"
+              class="mb-[1em] w-100"
+              format="yyyy/MM/dd"
+              value-format="yyyy/MM/dd"
+              @change="getData"
+            >
+            </el-date-picker>
+            <el-row :gutter="24" class="mb-[1em]" v-if="time.length">
+              <el-col :span="8" v-for="item in time" :key="item.time" class="mb-[1em]">
+                <el-checkbox
+                  v-model="form.timeBooks"
+                  border
+                  class="w-full"
+                  :label="item.time"
+                  :disabled="!item.isReady"
+                >
+                  {{ item.time }}
+                </el-checkbox>
               </el-col>
             </el-row>
-            <el-button type="primary" class="w-[140px]">Đặt sân</el-button>
+
+            <!-- service list -->
+            <section class="detail-items" v-if="place.services">
+              <p class="font-bold text-[1.25rem] mb-[1em]">Tiện ích trên sân</p>
+
+              <div v-for="(service, index) in place.services" :key="service.id" class="mb-[1em]">
+                <el-checkbox v-model="form.services" border class="w-full flex items-center" :label="index">
+                  <div class="flex flex-1">
+                    <p class="mr-auto">{{ service.name }}</p>
+                    <p>+{{ service.price }}đ</p>
+                  </div>
+                </el-checkbox>
+              </div>
+            </section>
+
+            <!-- Voucher -->
+            <section class="detail-items" v-if="place.voucherCreate">
+              <p class="font-bold text-[1.25rem] mb-[1em]">Voucher</p>
+
+              <div v-for="(voucher, index) in place.voucherCreate" :key="voucher.id" class="mb-[1em]">
+                <el-checkbox v-model="form.voucher" class="w-full h-auto flex items-center" :label="index" border>
+                  <div class="flex">
+                    <p class="mr-auto">{{ voucher.name }}</p>
+                    <p>-{{ voucher.value }}{{ voucher.type === voucherType.CASH ? 'đ' : '%' }}</p>
+                  </div>
+                </el-checkbox>
+              </div>
+            </section>
+
+            <!-- Phone -->
+            <section class="detail-items" v-if="place.voucherCreate">
+              <p class="font-bold text-[1.25rem] mb-[1em]">Số điện thoại liên hệ</p>
+              <el-input v-model="form.phoneNumber"></el-input>
+            </section>
+
+            <div v-if="price && Object.keys(price).length" class="box-shadow-1 rounded-lg p-[0.5em] mb-[1em]">
+              <p class="text-left mb-[1em] font-[600] text-md flex">
+                <span class="w-[80%] mr-auto"> Tổng tiền:</span>
+                <span class="text-main flex-1">{{ price.money }}đ</span>
+              </p>
+              <p class="text-left mb-[1em] font-[600] text-md flex">
+                <span class="w-[80%] mr-auto"> Phí gas:</span>
+                <span class="text-main flex-1">{{ price.gasFee }}đ</span>
+              </p>
+              <p class="text-left font-[600] text-md flex">
+                <span class="w-[80%] mr-auto"> Voucher giảm giá:</span>
+                <span class="text-main flex-1">{{ price.moneyDown }}đ</span>
+              </p>
+            </div>
+
+            <el-button type="primary" class="w-[140px]" @click="sendFormData">Đặt sân</el-button>
           </div>
         </section>
       </el-col>
     </el-row>
-
-    <!-- near station -->
-    <!-- <section class="detail-items">
-      <p class="card-header">Sân bóng đá gần sân Minh Kiệt Dương Nội</p>
-      <el-row :gutter="24">
-        <el-col :xs="12" :md="12" :sm="12" :lg="6" :xl="6" v-for="i in 4" :key="i" class="mb-[1em]">
-          <v-card />
-        </el-col>
-      </el-row>
-    </section> -->
   </div>
 </template>
 <script>
-import { getPlaceById } from '@/api/place'
+import { getPlaceById, getTime } from '@/api/place'
+import { applyVoucher, order } from '@/api/order'
+import { getDay } from '@/utils/day'
+import { HTTP_CODE, VOUNCHER_TYPE } from '@/utils/constants'
+
 export default {
   name: 'Detail',
 
   async created() {
     try {
-      const { data } = await getPlaceById(this.$route.params.id)
-      this.place = data.data
+      this.form.orderDay = getDay(Date.now())
+      await this.getData(this.form.orderDay)
     } catch (e) {
       console.log(e)
     }
   },
   data() {
     return {
-      radio1: false,
-      place: {}
+      loading: false,
+      voucherType: VOUNCHER_TYPE,
+      form: {
+        orderDay: '',
+        timeBooks: [],
+        services: [],
+        voucher: [],
+        phoneNumber: ''
+      },
+      place: {
+        services: []
+      },
+      time: [],
+      price: {}
+    }
+  },
+
+  watch: {
+    form: {
+      handler() {
+        this.price = {}
+      },
+      deep: true
+    }
+  },
+  methods: {
+    async getData(day) {
+      const [stadium, time] = await Promise.all([
+        getPlaceById(this.$route.params.id),
+        getTime(this.$route.params.id, { day })
+      ])
+
+      this.place = stadium.data.data
+      this.time = time.data.data
+    },
+
+    async sendFormData() {
+      try {
+        this.loading = true
+        const formData = {
+          ...this.form,
+          services: this.form.services?.map((item) => {
+            return this.place.services[item]
+          }),
+
+          voucher: this.form.voucher?.map((item) => {
+            return this.place.voucherCreate[item]
+          }),
+
+          place: {
+            id: this.place.id
+          }
+        }
+
+        let res = {}
+
+        if (Object.keys(this.price).length) {
+          res = await order(formData)
+          if (res.status === HTTP_CODE.CREATED) {
+            this.$vmess('Chúc mừng bạn đã đặt sân thành công!!')
+          }
+        } else {
+          res = await applyVoucher(formData)
+          this.price = res.data
+        }
+      } catch (e) {
+        this.$vmess.error('There is an error')
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
 </script>
-<style lang="css">
+<style lang="css" scoped>
 .detail-items {
   @apply border-b-[1px] border-[#e5e5e5] mb-[1.5em] pb-[1.5em];
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+::v-deep .el-checkbox__label {
+  flex: 1;
+}
+
+::v-deep .el-checkbox__input {
+  display: none;
 }
 </style>

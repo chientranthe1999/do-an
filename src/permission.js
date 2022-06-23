@@ -1,12 +1,13 @@
-import router from './router'
-import store from './store'
+import router from './routers'
+import store from './stores'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
+import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/404', '/403', '/stadium']
+const whiteList = ['/login', '/404', '/403', '/news', '/find-opponent', '/home']
 
 const notAllowedList = ['/login']
 
@@ -14,6 +15,9 @@ const notAllowedList = ['/login']
 router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
+
+  // set page title
+  document.title = getPageTitle(to.meta.title)
 
   // check isLogin
   const hasToken = getToken()

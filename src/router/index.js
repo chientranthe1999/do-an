@@ -45,12 +45,12 @@ const routes = [
         path: '',
         name: 'FindOpponent',
         component: () => import('@/views/opponent/List.vue')
-      },
-      {
-        path: 'detail',
-        name: 'NewsDetail',
-        component: () => import('@/views/news/Detail.vue')
       }
+      // {
+      //   path: 'detail',
+      //   name: 'NewsDetail',
+      //   component: () => import('@/views/news/Detail.vue')
+      // }
     ]
   },
   {
@@ -68,10 +68,19 @@ const routes = [
   }
 ]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
-})
+const createRouter = () => {
+  return new VueRouter({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes
+  })
+}
+
+const router = createRouter()
+
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 
 export default router

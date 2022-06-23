@@ -7,3 +7,7 @@ export function getPlace() {
 export function getPlaceById(id) {
   return axios.get('/place/' + id)
 }
+
+export function getTime(id, params) {
+  return axios.get('/place/available/' + id, { params })
+}

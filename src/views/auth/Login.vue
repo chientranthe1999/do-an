@@ -1,25 +1,18 @@
 <template lang="html">
-  <div class="content-container flex items-center justify-center h-[100vh] relative">
+  <div class="main-container flex items-center justify-center h-[100vh] relative">
     <div class="w-[520px] mx-auto p-[2em] box-shadow-1 rounded-lg bg-[white]">
-      <p class="uppercase font-bold text-[1.25rem] text-center mb-[1em]">Đăng nhập</p>
+      <p class="uppercase font-bold text-[1.25rem] text-center mb-[2em]">Đăng nhập</p>
       <el-form ref="form" :model="form" :rules="rules" auto-complete="off">
         <el-form-item label="Email" prop="email">
           <el-input v-model.trim="form.email" type="email" />
         </el-form-item>
 
         <el-form-item label="Mật khẩu" prop="password">
-          <el-input v-model="form.password" type="password" />
+          <el-input v-model="form.password" type="password" @keyup.enter.native="login" />
         </el-form-item>
       </el-form>
 
-      <el-button type="success" class="w-full mb-[1em]" :loading="loading" @click.native.prevent="login">
-        Đăng nhập
-      </el-button>
-
-      <div>
-        Bạn chưa có tài khoản?
-        <span class="text-[#588bae]"><router-link to="/sign-up">Đăng ký ngay</router-link></span>
-      </div>
+      <el-button type="success" class="w-full" :loading="loading" @click.native.prevent="login">Đăng nhập</el-button>
     </div>
   </div>
 </template>
@@ -62,11 +55,11 @@ export default {
             password: this.form.password
           })
 
-          this.$router.push('/')
+          this.$router.push('/manage')
           this.$vmess.success('Đăng nhập thành công')
         }
       } catch (e) {
-        this.$vmess.error('Tài khoản hoặc mật khẩu không chính xác! Vui lòng kiểm tra lại')
+        this.$vmess.error(e?.response?.data?.message || 'Đăng nhập thất bại')
       } finally {
         this.loading = false
       }
@@ -79,9 +72,8 @@ export default {
   font-weight: 600;
 }
 
-.content-container {
+.main-container {
   margin-left: 0 !important;
-  width: 100vw;
   background: url('../../assets/login-bg.jpg') no-repeat;
   background-position: center;
   background-size: cover;
