@@ -12,7 +12,7 @@ import '@/style/home.css'
 import ToastMessage from '@/utils/message'
 Vue.prototype.$vmess = ToastMessage
 
-// import '@/permission'
+import '@/permission'
 
 import '@/components'
 

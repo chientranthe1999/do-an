@@ -53,6 +53,23 @@ const routes = [
       // }
     ]
   },
+
+  {
+    path: '/charge',
+    component: Home,
+    children: [
+      {
+        path: '',
+        name: 'Charge',
+        component: () => import('@/views/transaction/Charge.vue')
+      }
+      // {
+      //   path: 'detail',
+      //   name: 'NewsDetail',
+      //   component: () => import('@/views/news/Detail.vue')
+      // }
+    ]
+  },
   {
     path: '/login',
     name: 'Login',

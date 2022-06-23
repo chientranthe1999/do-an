@@ -55,7 +55,12 @@ export default {
             password: this.form.password
           })
 
-          this.$router.push('/manage')
+          if (this.$route.query.redirect) {
+            this.$router.push(this.$route.query.redirect)
+          } else {
+            this.$router.push('/home')
+          }
+
           this.$vmess.success('Đăng nhập thành công')
         }
       } catch (e) {

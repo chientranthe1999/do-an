@@ -42,3 +42,15 @@
 .el-radio__input {
   display: none;
 }
+
+.header::before {
+  width: 0.4rem;
+  height: 3rem;
+  position: absolute;
+  top: 45%;
+  left: 1.1rem;
+  background-color: #172948;
+  content: '';
+  -webkit-transform: translateY(-50%) skew(-15deg);
+  transform: translateY(-50%) skew(-15deg);
+}

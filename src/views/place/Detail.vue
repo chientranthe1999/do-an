@@ -27,7 +27,7 @@
 
         <!-- comment -->
         <section class="detail-items">
-          <p class="font-bold text-[1.25rem] mb-[1em]">Đánh giá sân bóng Minh Kiệt Dương Nội</p>
+          <p class="font-bold text-[1.25rem] mb-[1em]">Đánh giá sân bóng {{ place.name }}</p>
           <div>
             <span class="text-[1.25rem] font-bold text-main mr-[0.5em]">4.6</span>
             <span><i class="el-icon-star-on text-[#fadb14]" v-for="i in 5" :key="i" /> (1 đánh giá)</span>
@@ -94,7 +94,7 @@
             </el-row>
 
             <!-- service list -->
-            <section class="detail-items" v-if="place.services">
+            <section class="detail-items" v-if="place.services.length">
               <p class="font-bold text-[1.25rem] mb-[1em]">Tiện ích trên sân</p>
 
               <div v-for="(service, index) in place.services" :key="service.id" class="mb-[1em]">
@@ -108,7 +108,7 @@
             </section>
 
             <!-- Voucher -->
-            <section class="detail-items" v-if="place.voucherCreate">
+            <section class="detail-items" v-if="place.voucherCreate.length">
               <p class="font-bold text-[1.25rem] mb-[1em]">Voucher</p>
 
               <div v-for="(voucher, index) in place.voucherCreate" :key="voucher.id" class="mb-[1em]">
@@ -178,7 +178,8 @@ export default {
         phoneNumber: ''
       },
       place: {
-        services: []
+        services: [],
+        voucherCreate: []
       },
       time: [],
       price: {}
@@ -222,21 +223,31 @@ export default {
           }
         }
 
-        let res = {}
-
         if (Object.keys(this.price).length) {
-          res = await order(formData)
-          if (res.status === HTTP_CODE.CREATED) {
-            this.$vmess('Chúc mừng bạn đã đặt sân thành công!!')
-          }
+          this._placeOrder(formData)
         } else {
-          res = await applyVoucher(formData)
-          this.price = res.data
+          this._getPrice(formData)
         }
       } catch (e) {
         this.$vmess.error('There is an error')
       } finally {
         this.loading = false
+      }
+    },
+
+    async _getPrice(formData) {
+      const res = await applyVoucher(formData)
+      this.price = res.data
+    },
+
+    async _placeOrder(formData) {
+      if (!this.$store.getters['token']) {
+        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này')
+      }
+
+      const res = await order(formData)
+      if (res.status === HTTP_CODE.CREATED) {
+        this.$vmess('Chúc mừng bạn đã đặt sân thành công!!')
       }
     }
   }
