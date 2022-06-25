@@ -15,6 +15,7 @@ Vue.prototype.$vmess = ToastMessage
 import '@/permission'
 
 import '@/components'
+import '@/filters/format'
 
 import VueCarousel from 'vue-carousel'
 import { Carousel, Slide } from 'vue-carousel'

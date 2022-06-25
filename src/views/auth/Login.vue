@@ -78,7 +78,7 @@ export default {
 }
 
 .main-container {
-  margin-left: 0 !important;
+  margin: 0 auto;
   background: url('../../assets/login-bg.jpg') no-repeat;
   background-position: center;
   background-size: cover;

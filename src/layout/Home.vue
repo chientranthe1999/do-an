@@ -4,6 +4,7 @@
     <div class="main-container">
       <router-view></router-view>
     </div>
+    <v-footer></v-footer>
   </div>
 </template>
 <script>

@@ -1,5 +1,5 @@
 <template lang="html">
-  <div v-loading="loading">
+  <div v-loading="loading" class="relative">
     <el-row :gutter="24">
       <el-col :sm="24" :md="16">
         <!-- main content -->
@@ -67,7 +67,10 @@
         <section>
           <p class="font-bold text-[1.5rem] mb-[1em]">Đặt sân</p>
           <div class="border rounded-lg p-[1em] border-[#e5e5e5] text-center">
-            <p class="font-bold text-[1.25rem] mb-[1em]">Chọn thời gian</p>
+            <p class="card-name flex items-center justify-center">
+              <img src="@/icons/time.svg" alt="" class="icon-class" />
+              Chọn thời gian
+            </p>
 
             <el-date-picker
               v-model="form.orderDay"
@@ -87,6 +90,7 @@
                   class="w-full"
                   :label="item.time"
                   :disabled="!item.isReady"
+                  @change="_getPrice"
                 >
                   {{ item.time }}
                 </el-checkbox>
@@ -95,13 +99,22 @@
 
             <!-- service list -->
             <section class="detail-items" v-if="place.services.length">
-              <p class="font-bold text-[1.25rem] mb-[1em]">Tiện ích trên sân</p>
+              <p class="card-name flex items-center justify-center">
+                <img src="@/icons/more.svg" alt="" class="icon-class" />
+                Tiện ích
+              </p>
 
               <div v-for="(service, index) in place.services" :key="service.id" class="mb-[1em]">
-                <el-checkbox v-model="form.services" border class="w-full flex items-center" :label="index">
+                <el-checkbox
+                  v-model="form.services"
+                  border
+                  class="w-full flex items-center"
+                  :label="index"
+                  @change="_getPrice"
+                >
                   <div class="flex flex-1">
                     <p class="mr-auto">{{ service.name }}</p>
-                    <p>+{{ service.price }}đ</p>
+                    <p>+{{ service.price | formatMoney }}</p>
                   </div>
                 </el-checkbox>
               </div>
@@ -109,51 +122,92 @@
 
             <!-- Voucher -->
             <section class="detail-items" v-if="place.voucherCreate.length">
-              <p class="font-bold text-[1.25rem] mb-[1em]">Voucher</p>
+              <p class="card-name flex items-center justify-center">
+                <img src="@/icons/voucher.svg" alt="" class="icon-class" />
+                Voucher
+              </p>
 
               <div v-for="(voucher, index) in place.voucherCreate" :key="voucher.id" class="mb-[1em]">
-                <el-checkbox v-model="form.voucher" class="w-full h-auto flex items-center" :label="index" border>
-                  <div class="flex">
-                    <p class="mr-auto">{{ voucher.name }}</p>
-                    <p>-{{ voucher.value }}{{ voucher.type === voucherType.CASH ? 'đ' : '%' }}</p>
+                <el-checkbox
+                  v-model="form.voucher"
+                  class="w-full h-auto flex items-center"
+                  :label="index"
+                  border
+                  @change="_getPrice"
+                >
+                  <div>
+                    <div class="flex mb-[4px]">
+                      <p class="mr-auto w-[80%] text-left">{{ voucher.name }}</p>
+                      <p v-if="voucher.type === voucherType.PERCENT">-{{ voucher.value }}%</p>
+                      <p v-else>-{{ voucher.value | formatMoney }}</p>
+                    </div>
+                    <p class="text-left">Ngày hết hạn: {{ voucher.endDate }}</p>
                   </div>
                 </el-checkbox>
               </div>
             </section>
 
             <!-- Phone -->
-            <section class="detail-items" v-if="place.voucherCreate">
-              <p class="font-bold text-[1.25rem] mb-[1em]">Số điện thoại liên hệ</p>
+            <section class="detail-items border-none" v-if="place.voucherCreate">
+              <p class="card-name">Số điện thoại liên hệ</p>
               <el-input v-model="form.phoneNumber"></el-input>
             </section>
-
-            <div v-if="price && Object.keys(price).length" class="box-shadow-1 rounded-lg p-[0.5em] mb-[1em]">
-              <p class="text-left mb-[1em] font-[600] text-md flex">
-                <span class="w-[80%] mr-auto"> Tổng tiền:</span>
-                <span class="text-main flex-1">{{ price.money }}đ</span>
-              </p>
-              <p class="text-left mb-[1em] font-[600] text-md flex">
-                <span class="w-[80%] mr-auto"> Phí gas:</span>
-                <span class="text-main flex-1">{{ price.gasFee }}đ</span>
-              </p>
-              <p class="text-left font-[600] text-md flex">
-                <span class="w-[80%] mr-auto"> Voucher giảm giá:</span>
-                <span class="text-main flex-1">{{ price.moneyDown }}đ</span>
-              </p>
-            </div>
-
-            <el-button type="primary" class="w-[140px]" @click="sendFormData">Đặt sân</el-button>
           </div>
         </section>
       </el-col>
     </el-row>
+
+    <div
+      v-if="price && Object.keys(price).length"
+      class="fixed bottom-0 left-0 border-t-2 border-main fixed-bar py-[1rem] w-full bg-[white] px-[1em] z-10"
+    >
+      <div
+        class="absolute top-[-15%] bg-blue text-[white] py-[4px] px-[18px] right-[5%] rounded-lg text-xl cursor-pointer"
+      >
+        <i class="el-icon-arrow-down"></i>
+      </div>
+
+      <div class="absolute top-[-15%] bg-main text-[white] p-[8px] left-[5%] rounded-lg px-[2em]">Giá tiền</div>
+      <!-- main price -->
+      <div class="flex items-center w-full">
+        <div class="w-[60%] mx-[1em]">
+          <div class="flex items-center py-[0.5em] w-full">
+            <div class="w-[60%] flex items-center">
+              <img src="@/icons/fee.svg" class="icon-class" alt="" />
+              <span class="font-[700]">Phí thuê sân + Tiện ích</span>
+            </div>
+            <span class="text-main flex-1 text-right">{{ price.money | formatMoney }}</span>
+          </div>
+          <div class="flex items-center py-[0.5em] w-full">
+            <div class="w-[60%] flex items-center">
+              <img src="@/icons/fee.svg" class="icon-class" alt="" />
+              <span class="font-[700]">Phí dịch vụ</span>
+            </div>
+            <span class="text-main flex-1 text-right">{{ price.gasFee | formatMoney }}</span>
+          </div>
+          <div class="flex items-center py-[0.5em] w-full">
+            <div class="w-[60%] flex items-center">
+              <img src="@/icons/voucher.svg" class="icon-class" alt="" />
+              <span class="font-[700]">Voucher</span>
+            </div>
+            <span class="text-main flex-1 text-right">-{{ price.moneyDown | formatMoney }}</span>
+          </div>
+        </div>
+        <div class="w-[20%] text-center border-main border-r-[1px] border-l-[1px] mx-[1em]">
+          <p class="mb-[0.5em] text-xl font-[600]">Số tiền cần thanh toán</p>
+          <p class="text-main text-xl font-bold">{{ this.price.moneyRes | formatMoney }}</p>
+        </div>
+
+        <el-button type="success" class="w-[140px] h-[40px] mx-[1em] flex-1" @click="sendFormData">Đặt sân</el-button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { getPlaceById, getTime } from '@/api/place'
 import { applyVoucher, order } from '@/api/order'
 import { getDay } from '@/utils/day'
-import { HTTP_CODE, VOUNCHER_TYPE } from '@/utils/constants'
+import { VOUNCHER_TYPE } from '@/utils/constants'
 
 export default {
   name: 'Detail',
@@ -170,6 +224,7 @@ export default {
     return {
       loading: false,
       voucherType: VOUNCHER_TYPE,
+      isOpenPrice: false,
       form: {
         orderDay: '',
         timeBooks: [],
@@ -186,14 +241,14 @@ export default {
     }
   },
 
-  watch: {
-    form: {
-      handler() {
-        this.price = {}
-      },
-      deep: true
-    }
-  },
+  // watch: {
+  //   form: {
+  //     handler() {
+  //       this.price = {}
+  //     },
+  //     deep: true
+  //   }
+  // },
   methods: {
     async getData(day) {
       const [stadium, time] = await Promise.all([
@@ -208,25 +263,11 @@ export default {
     async sendFormData() {
       try {
         this.loading = true
-        const formData = {
-          ...this.form,
-          services: this.form.services?.map((item) => {
-            return this.place.services[item]
-          }),
-
-          voucher: this.form.voucher?.map((item) => {
-            return this.place.voucherCreate[item]
-          }),
-
-          place: {
-            id: this.place.id
-          }
-        }
 
         if (Object.keys(this.price).length) {
-          this._placeOrder(formData)
+          this._placeOrder()
         } else {
-          this._getPrice(formData)
+          this._getPrice()
         }
       } catch (e) {
         this.$vmess.error('There is an error')
@@ -235,19 +276,56 @@ export default {
       }
     },
 
-    async _getPrice(formData) {
+    async _getPrice() {
+      const formData = this._createFormData()
       const res = await applyVoucher(formData)
-      this.price = res.data
+      this.price = {
+        ...res.data,
+        moneyRes: res.data.money - res.data.moneyDown
+      }
+      console.log(this.price)
     },
 
-    async _placeOrder(formData) {
+    async _placeOrder() {
+      const formData = this._createFormData()
+
       if (!this.$store.getters['token']) {
         return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này')
       }
 
-      const res = await order(formData)
-      if (res.status === HTTP_CODE.CREATED) {
-        this.$vmess('Chúc mừng bạn đã đặt sân thành công!!')
+      await order(formData)
+      this.price = {}
+      this._resetForm()
+      this.form.orderDay = getDay(Date.now())
+      await this.getData(this.form.orderDay)
+
+      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!')
+    },
+
+    _createFormData() {
+      return {
+        ...this.form,
+        services: this.form.services?.map((item) => {
+          return this.place.services[item]
+        }),
+
+        voucher: this.form.voucher?.map((item) => {
+          return this.place.voucherCreate[item]
+        }),
+
+        place: {
+          id: this.place.id
+        }
+      }
+    },
+
+    _resetForm() {
+      this.form = {
+        orderDay: '',
+        timeBooks: [],
+        services: [],
+        voucher: [],
+        phoneNumber: ''
       }
     }
   }
@@ -268,5 +346,32 @@ export default {
 
 ::v-deep .el-checkbox__input {
   display: none;
+}
+
+::v-deep .el-checkbox.is-bordered {
+  height: auto;
+}
+
+::v-deep .el-checkbox.is-bordered.is-checked {
+  border-color: #21ba45;
+}
+
+::v-deep .el-checkbox__input.is-checked + .el-checkbox__label {
+  color: #21ba45;
+}
+
+.card-name {
+  @apply font-bold text-[1.25rem] mb-[1em] border-x-4 py-[0.5em];
+  border-color: #21ba45;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.fixed-bar {
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+}
+
+.icon-class {
+  height: 30px;
+  margin-right: 0.25em;
 }
 </style>
