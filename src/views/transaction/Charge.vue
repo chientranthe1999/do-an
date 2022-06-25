@@ -71,4 +71,9 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.header::before {
+  width: 0.5rem;
+  height: 4rem;
+}
+</style>

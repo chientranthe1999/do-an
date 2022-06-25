@@ -3,22 +3,28 @@
     <p>Logo</p>
 
     <div class="flex items-center">
-      <p class="mr-[1.5em] hover:text-main cursor-pointer" @click="$router.push({ name: 'NewsList' })">
-        <i class="el-icon-notebook-1" />
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'NewsList' })"
+      >
+        <img src="@/icons/news.svg" class="icon-class" />
         <span>Tin tức</span>
       </p>
 
-      <p class="mr-[1.5em] hover:text-main cursor-pointer" @click="$router.push({ name: 'FindOpponent' })">
-        <i class="el-icon-search" />
-        <span>Tìm đối</span>
-      </p>
-      <p class="mr-[1.5em] hover:text-main cursor-pointer">
-        <i class="el-icon-s-goods" />
-        <span>Giỏ hàng</span>
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'FindOpponent' })"
+      >
+        <img src="@/icons/search.svg" class="icon-class" />
+        <span>Tìm kiếm</span>
       </p>
 
-      <p class="mr-[1em] hover:text-main cursor-pointer" @click="$router.push({ name: 'Login' })" v-if="!token">
-        <i class="el-icon-s-custom" />
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'Login' })"
+        v-if="!token"
+      >
+        <img src="@/icons/user.svg" class="icon-class" />
         <span>Đăng nhập</span>
       </p>
 
@@ -32,6 +38,9 @@
             <el-dropdown-item @click.native="$router.push({ name: 'Charge' })">
               <span style="display: block">Nạp tiền</span>
             </el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push({ name: 'Charge' })">
+              <span style="display: block">Lịch sử giao dịch</span>
+            </el-dropdown-item>
             <el-dropdown-item @click.native="logout">
               <span style="display: block">Đăng xuất</span>
             </el-dropdown-item>
@@ -39,9 +48,13 @@
         </el-dropdown>
       </div>
 
-      <p class="mr-[1.5em] hover:text-main cursor-pointer" v-if="!token" @click="$router.push({ name: 'Register' })">
-        <i class="el-icon-s-goods" />
-        <span>Đăng kí</span>
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'Register' })"
+        v-if="!token"
+      >
+        <img src="@/icons/register.svg" class="icon-class" />
+        <span>Đăng ký</span>
       </p>
     </div>
   </header>
@@ -68,11 +81,15 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+.icon-class {
+  height: 30px;
+  margin-right: 4px;
+}
 .right-menu {
   float: right;
   height: 100%;
-  line-height: 50px;
+  line-height: 40px;
 
   &:focus {
     outline: none;
