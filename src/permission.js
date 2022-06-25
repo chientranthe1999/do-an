@@ -7,6 +7,7 @@ import { getToken } from '@/utils/auth' // get token from cookie
 NProgress.configure({ showSpinner: false })
 
 const whiteList = ['/login', '/404', '/403', '/news', '/find-opponent', '/home']
+const nameWhiteList = ['InforDetail']
 
 const notAllowedList = ['/login']
 
@@ -40,7 +41,7 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1) {
+    if (whiteList.indexOf(to.path) !== -1 || nameWhiteList.indexOf(to.name) !== -1) {
       // in the free login whitelist, go directly
       next()
     } else {

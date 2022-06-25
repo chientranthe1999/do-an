@@ -79,7 +79,7 @@
               class="mb-[1em] w-100"
               format="yyyy/MM/dd"
               value-format="yyyy/MM/dd"
-              @change="getData"
+              @change="changeDay"
             >
             </el-date-picker>
             <el-row :gutter="24" class="mb-[1em]" v-if="time.length">
@@ -260,6 +260,13 @@ export default {
       this.time = time.data.data
     },
 
+    async changeDay(day) {
+      this.form.timeBooks = []
+      this.price = {}
+      const res = await getTime(this.$route.params.id, { day })
+      this.time = res.data.data
+    },
+
     async sendFormData() {
       try {
         this.loading = true
@@ -283,7 +290,6 @@ export default {
         ...res.data,
         moneyRes: res.data.money - res.data.moneyDown
       }
-      console.log(this.price)
     },
 
     async _placeOrder() {

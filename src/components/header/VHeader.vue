@@ -38,6 +38,11 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
+
+      <p class="mr-[1.5em] hover:text-main cursor-pointer" v-if="!token" @click="$router.push({ name: 'Register' })">
+        <i class="el-icon-s-goods" />
+        <span>Đăng kí</span>
+      </p>
     </div>
   </header>
 </template>
