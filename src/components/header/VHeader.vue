@@ -38,8 +38,8 @@
             <el-dropdown-item @click.native="$router.push({ name: 'Charge' })">
               <span style="display: block">Nạp tiền</span>
             </el-dropdown-item>
-            <el-dropdown-item @click.native="$router.push({ name: 'Charge' })">
-              <span style="display: block">Lịch sử giao dịch</span>
+            <el-dropdown-item @click.native="$router.push({ name: 'PaymentHistory' })">
+              <span style="display: block">Lịch sử đặt hàng</span>
             </el-dropdown-item>
             <el-dropdown-item @click.native="logout">
               <span style="display: block">Đăng xuất</span>

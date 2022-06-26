@@ -1,7 +1,12 @@
 <template lang="html">
-  <header class="header pl-[4em] border-b border-[#e5e5e5] mb-[4em] relative">
-    <p class="italic capitalize text-[1.5rem]">Tìm đối thủ xứng tầm</p>
-  </header>
+  <div>
+    <header class="header pl-[4em] border-b border-[#e5e5e5] mb-[4em] relative">
+      <p class="italic capitalize text-[1.5rem]">Tìm đối thủ xứng tầm</p>
+    </header>
+    <main class="content-main-container">
+      <div class="box-shadow-1 rounded-lg">div</div>
+    </main>
+  </div>
 </template>
 <script>
 export default {}

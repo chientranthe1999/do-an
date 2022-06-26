@@ -62,12 +62,12 @@ const routes = [
         path: '',
         name: 'Charge',
         component: () => import('@/views/transaction/Charge.vue')
+      },
+      {
+        path: 'history',
+        name: 'PaymentHistory',
+        component: () => import('@/views/transaction/History.vue')
       }
-      // {
-      //   path: 'detail',
-      //   name: 'NewsDetail',
-      //   component: () => import('@/views/news/Detail.vue')
-      // }
     ]
   },
   {
