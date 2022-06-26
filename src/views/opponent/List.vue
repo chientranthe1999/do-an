@@ -9,7 +9,19 @@
   </div>
 </template>
 <script>
-export default {}
+import { getNews } from '@/api/news'
+export default {
+  methods: {
+    async getNews() {
+      const res = await getNews({
+        page: 1,
+        limit: 10
+      })
+
+      console.log(res)
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .header::before {

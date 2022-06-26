@@ -31,7 +31,7 @@ const routes = [
         component: () => import('@/views/news/List.vue')
       },
       {
-        path: 'detail',
+        path: 'detail/:id',
         name: 'NewsDetail',
         component: () => import('@/views/news/Detail.vue')
       }

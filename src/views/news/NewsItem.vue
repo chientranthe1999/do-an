@@ -1,11 +1,20 @@
 <template lang="html">
-  <div class="card-item cursor-pointer rounded-[4px]" @click="$router.push({ name: 'NewsDetail' })">
-    <img class="w-full h-[200px]" src="@/assets/imgs/banner2.jpg" />
+  <div
+    class="card-item cursor-pointer rounded-[4px]"
+    @click="$router.push({ name: 'NewsDetail', params: { id: initData.id } })"
+  >
+    <!-- <img class="w-full h-[200px]" :src="initData.image" /> -->
+    <el-image class="w-full h-[200px]" :src="initData.image" lazy fit="cover">
+      <div slot="error" class="image-slot">
+        <i class="el-icon-picture-outline text-[28px]"></i>
+      </div>
+    </el-image>
     <div class="card-content">
+      <el-tag class="rounded-full mb-1 mr-2" type="success">Admin</el-tag>
+      <el-tag class="rounded-full mb-1">{{ initData.type }}</el-tag>
       <p class="font-[700] text-lg pc:text-[1.25rem] mb-1 news-title">
-        Chế độ dinh dưỡng cho người chơi tensdfdfsd fsdf sdf sdfsdfsdf sdf sdf snis p
+        {{ initData.description }}
       </p>
-      <p>Dinh dưỡng trong tennis chính xác là một phần thiết yếu trong chế độ hàng ngà</p>
     </div>
   </div>
 </template>
@@ -42,5 +51,15 @@ export default {
 .card-content {
   padding: 0.5em;
   line-height: 1.8rem;
+}
+
+::v-deep .image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: #f5f7fa;
+  color: #909399;
 }
 </style>
