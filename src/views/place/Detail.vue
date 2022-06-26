@@ -195,7 +195,8 @@
         </div>
         <div class="w-[20%] text-center border-main border-r-[1px] border-l-[1px] mx-[1em]">
           <p class="mb-[0.5em] text-xl font-[600]">Số tiền cần thanh toán</p>
-          <p class="text-main text-xl font-bold">{{ this.price.moneyRes | formatMoney }}</p>
+          <p class="text-main text-xl font-bold" v-if="price.moneyRes">{{ price.moneyRes | formatMoney }}</p>
+          <p class="text-main text-xl font-bold" v-else>0 VND</p>
         </div>
 
         <el-button type="success" class="w-[140px] h-[40px] mx-[1em] flex-1" @click="sendFormData">Đặt sân</el-button>
@@ -288,7 +289,7 @@ export default {
       const res = await applyVoucher(formData)
       this.price = {
         ...res.data,
-        moneyRes: res.data.money - res.data.moneyDown
+        moneyRes: this._getMoney(res.data)
       }
     },
 
@@ -322,6 +323,16 @@ export default {
         place: {
           id: this.place.id
         }
+      }
+    },
+
+    _getMoney(data) {
+      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown)
+      console.log(moneyRes)
+      if (moneyRes >= 0) {
+        return moneyRes
+      } else {
+        return 0
       }
     },
 
