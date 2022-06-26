@@ -11,3 +11,7 @@ export function getPlaceById(id) {
 export function getTime(id, params) {
   return axios.get('/place/available/' + id, { params })
 }
+
+export function createComment(data) {
+  return axios.post('/comment', data)
+}

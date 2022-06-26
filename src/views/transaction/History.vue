@@ -1,7 +1,7 @@
 <template lang="html">
   <div>
     <header class="header pl-[4em] border-b border-[#e5e5e5] mb-[4em] relative">
-      <p class="italic capitalize text-[1.5rem]">Lịch sử giao dịch</p>
+      <p class="italic capitalize text-[1.5rem]">Lịch sử đặt hàng</p>
     </header>
     <div class="content-main-container">
       <div class="bg-white box-shadow-1 p-[0.5em] rounded-md">

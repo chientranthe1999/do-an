@@ -28,7 +28,11 @@
         <span>Đăng nhập</span>
       </p>
 
-      <div class="right-menu" v-else>
+      <div class="right-menu flex items-center" v-else>
+        <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center">
+          <img src="@/icons/coin.svg" class="icon-class" />
+          <span>{{ money }}</span>
+        </p>
         <el-dropdown class="avatar-container" trigger="click">
           <div class="avatar-wrapper no-select flex items-center">
             <el-avatar icon="el-icon-user-solid" class="avt-image" />
@@ -70,6 +74,10 @@ export default {
 
     token() {
       return this.$store.getters['token']
+    },
+
+    money() {
+      return this.$store.getters['money']
     }
   },
 
@@ -83,7 +91,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .icon-class {
-  height: 30px;
+  height: 24px;
   margin-right: 4px;
 }
 .right-menu {

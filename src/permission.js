@@ -6,8 +6,8 @@ import { getToken } from '@/utils/auth' // get token from cookie
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/404', '/403', '/news', '/find-opponent', '/home']
-const nameWhiteList = ['InforDetail', 'Register']
+const whiteList = ['/login', '/404', '/403', '/home']
+const nameWhiteList = ['InforDetail', 'Register', 'NewsList', 'NewsListDetail', 'FindOpponent']
 
 const notAllowedList = ['/login']
 
