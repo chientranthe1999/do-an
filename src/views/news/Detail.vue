@@ -1,6 +1,6 @@
 <template lang="html">
   <div>
-    <p class="font-bold text-[1.5em]">{{ news.description }}</p>
+    <p class="font-bold text-[1.5em]">{{ news.title }}</p>
     <p class="mb-[1em] italic text-sm">Admin - 25/11/2022</p>
     <div>
       <el-image class="w-full mb-4" :src="news.image" lazy fit="cover" v-if="news.image"> </el-image>

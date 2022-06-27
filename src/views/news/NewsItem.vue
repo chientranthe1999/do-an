@@ -13,7 +13,7 @@
       <el-tag class="rounded-full mb-1 mr-2" type="success">Admin</el-tag>
       <el-tag class="rounded-full mb-1">{{ initData.type }}</el-tag>
       <p class="font-[700] text-lg pc:text-[1.25rem] mb-1 news-title">
-        {{ initData.description }}
+        {{ initData.title }}
       </p>
     </div>
   </div>

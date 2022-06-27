@@ -72,7 +72,7 @@ export default {
             id: item.id,
             name: item.name,
             image: item.image,
-            description: item.description,
+            title: item.title,
             type: item.typeArticle.title
           }
         })
