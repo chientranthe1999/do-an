@@ -12,7 +12,11 @@
               {{ place.address }}
             </span>
           </p>
-          <img class="w-full mb-[1em] object-contain h-[480px]" :src="place.imageDetails[0]" v-if="place.imageDetails" />
+          <img
+            class="w-full mb-[1em] object-contain h-[480px]"
+            :src="place.imageDetails[0]"
+            v-if="place.imageDetails"
+          />
           <p v-html="place.description"></p>
         </section>
 
@@ -24,11 +28,19 @@
             <span><i class="el-icon-star-on text-[#fadb14]" v-for="i in 5" :key="i" /> (1 đánh giá)</span>
 
             <div class="rounded-[5px] border border-[#e5e5e5] p-[1em]">
-              <div class="flex items-center mb-[0.5em] font-[700]">Voting <el-rate class="ml-[0.5em]" v-model="comment.star"></el-rate></div>
+              <div class="flex items-center mb-[0.5em] font-[700]">
+                Voting <el-rate class="ml-[0.5em]" v-model="comment.star"></el-rate>
+              </div>
               <el-form>
                 <el-row :gutter="12">
                   <el-col :md="16">
-                    <el-input type="textarea" rows="4" placeholder="Nhập bình luận của bạn" class="w-full h-[120px] border-1" v-model="comment.comment" />
+                    <el-input
+                      type="textarea"
+                      rows="4"
+                      placeholder="Nhập bình luận của bạn"
+                      class="w-full h-[120px] border-1"
+                      v-model="comment.comment"
+                    />
                   </el-col>
                   <el-col :md="8">
                     <el-form-item>
@@ -58,68 +70,107 @@
               Chọn thời gian
             </p>
 
-            <el-date-picker v-model="form.orderDay" type="date" placeholder="Pick a day" class="mb-[1em] w-100" format="yyyy/MM/dd" value-format="yyyy/MM/dd" @change="changeDay"> </el-date-picker>
+            <el-date-picker
+              v-model="form.orderDay"
+              type="date"
+              placeholder="Pick a day"
+              class="mb-[1em] w-100"
+              format="yyyy/MM/dd"
+              value-format="yyyy/MM/dd"
+              @change="changeDay"
+            >
+            </el-date-picker>
             <el-row :gutter="24" class="mb-[1em]" v-if="time.length">
               <el-col :span="8" v-for="item in time" :key="item.time" class="mb-[1em]">
-                <el-checkbox v-model="form.timeBooks" border class="w-full" :label="item.time" :disabled="!item.isReady" @change="_getPrice">
+                <el-checkbox
+                  v-model="form.timeBooks"
+                  border
+                  class="w-full"
+                  :label="item.time"
+                  :disabled="!item.isReady"
+                  @change="_getPrice"
+                >
                   {{ item.time }}
                 </el-checkbox>
               </el-col>
             </el-row>
 
-            <!-- service list -->
-            <section class="detail-items" v-if="place.services.length">
-              <p class="flex items-center justify-center card-name">
-                <img src="@/icons/more.svg" alt="" class="icon-class" />
-                Tiện ích
-              </p>
+            <div v-if="!isDayOff">
+              <section class="detail-items" v-if="place.services.length">
+                <p class="flex items-center justify-center card-name">
+                  <img src="@/icons/more.svg" alt="" class="icon-class" />
+                  Tiện ích
+                </p>
 
-              <div v-for="(service, index) in place.services" :key="service.id" class="mb-[1em]">
-                <el-checkbox v-model="form.services" border class="flex items-center w-full" :label="index" @change="_getPrice">
-                  <div class="flex flex-1">
-                    <p class="mr-auto">{{ service.name }}</p>
-                    <p>+{{ service.price | formatMoney }}</p>
-                  </div>
-                </el-checkbox>
-              </div>
-            </section>
-
-            <!-- Voucher -->
-            <section class="detail-items" v-if="place.voucherCreate.length">
-              <p class="flex items-center justify-center card-name">
-                <img src="@/icons/voucher.svg" alt="" class="icon-class" />
-                Voucher
-              </p>
-
-              <div v-for="(voucher, index) in place.voucherCreate" :key="voucher.id" class="mb-[1em]">
-                <el-checkbox v-model="form.voucher" class="flex items-center w-full h-auto" :label="index" border @change="_getPrice" v-if="isVoucherAvailable(voucher.isActive, voucher.endDate)">
-                  <div>
-                    <div class="flex mb-[4px]">
-                      <p class="mr-auto w-[80%] text-left">{{ voucher.name }}</p>
-                      <p v-if="voucher.type === voucherType.PERCENT">-{{ voucher.value }}%</p>
-                      <p v-else>-{{ voucher.value | formatMoney }}</p>
+                <div v-for="(service, index) in place.services" :key="service.id" class="mb-[1em]">
+                  <el-checkbox
+                    v-model="form.services"
+                    border
+                    class="flex items-center w-full"
+                    :label="index"
+                    @change="_getPrice"
+                  >
+                    <div class="flex flex-1">
+                      <p class="mr-auto">{{ service.name }}</p>
+                      <p>+{{ service.price | formatMoney }}</p>
                     </div>
-                    <p class="text-left">Ngày hết hạn: {{ voucher.endDate }}</p>
-                  </div>
-                </el-checkbox>
-              </div>
-            </section>
+                  </el-checkbox>
+                </div>
+              </section>
 
-            <!-- Phone -->
-            <section class="border-none detail-items" v-if="place.voucherCreate">
-              <p class="card-name">Số điện thoại liên hệ</p>
-              <el-input v-model="form.phoneNumber"></el-input>
-            </section>
+              <!-- Voucher -->
+              <section class="detail-items" v-if="place.voucherCreate.length">
+                <p class="flex items-center justify-center card-name">
+                  <img src="@/icons/voucher.svg" alt="" class="icon-class" />
+                  Voucher
+                </p>
+
+                <div v-for="(voucher, index) in place.voucherCreate" :key="voucher.id" class="mb-[1em]">
+                  <el-checkbox
+                    v-model="form.voucher"
+                    class="flex items-center w-full h-auto"
+                    :label="index"
+                    border
+                    @change="_getPrice"
+                    v-if="isVoucherAvailable(voucher.isActive, voucher.endDate)"
+                  >
+                    <div>
+                      <div class="flex mb-[4px]">
+                        <p class="mr-auto w-[80%] text-left">{{ voucher.name }}</p>
+                        <p v-if="voucher.type === voucherType.PERCENT">-{{ voucher.value }}%</p>
+                        <p v-else>-{{ voucher.value | formatMoney }}</p>
+                      </div>
+                      <p class="text-left">Ngày hết hạn: {{ voucher.endDate }}</p>
+                    </div>
+                  </el-checkbox>
+                </div>
+              </section>
+
+              <!-- Phone -->
+              <section class="border-none detail-items" v-if="place.voucherCreate">
+                <p class="card-name">Số điện thoại liên hệ</p>
+                <el-input v-model="form.phoneNumber"></el-input>
+              </section>
+            </div>
+
+            <div v-else>
+              <p class="text-center text-[white] bg-warning py-[0.5rem] rounded-md text-lg">
+                {{ this.message }}
+              </p>
+            </div>
           </div>
         </section>
       </el-col>
     </el-row>
 
     <!-- fixed price bar -->
-    <div v-if="price && Object.keys(price).length" class="fixed bottom-0 left-0 border-t-2 border-main fixed-bar py-[1rem] w-full bg-[white] px-[1em] z-10">
-      <div class="absolute top-[-15%] bg-blue text-[white] py-[4px] px-[18px] right-[5%] rounded-lg text-xl cursor-pointer">
+    <div
+      v-if="price && Object.keys(price).length"
+      class="fixed bottom-0 left-0 border-t-2 border-main fixed-bar py-[1rem] w-full bg-[white] px-[1em] z-10"
+    >
+      <!-- <div class="absolute top-[-15%] bg-blue text-[white] py-[4px] px-[18px] right-[5%] rounded-lg text-xl cursor-pointer">
         <i class="el-icon-arrow-down"></i>
-      </div>
+      </div> -->
 
       <div class="absolute top-[-15%] bg-main text-[white] p-[8px] left-[5%] rounded-lg px-[2em]">Giá tiền</div>
       <!-- main price -->
@@ -159,20 +210,20 @@
   </div>
 </template>
 <script>
-import { getPlaceById, getTime, createComment } from '@/api/place';
-import { applyVoucher, order } from '@/api/order';
-import { getDay } from '@/utils/day';
-import { VOUNCHER_TYPE } from '@/utils/constants';
+import { getPlaceById, getTime, createComment } from '@/api/place'
+import { applyVoucher, order } from '@/api/order'
+import { getDay } from '@/utils/day'
+import { VOUNCHER_TYPE } from '@/utils/constants'
 
-import moment from 'moment';
+import moment from 'moment'
 export default {
   name: 'Detail',
   async created() {
     try {
-      this.form.orderDay = getDay(Date.now());
-      await this.getData(this.form.orderDay);
+      this.form.orderDay = getDay(Date.now())
+      await this.getData(this.form.orderDay)
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
   },
   data() {
@@ -180,23 +231,25 @@ export default {
       loading: false,
       voucherType: VOUNCHER_TYPE,
       isOpenPrice: false,
+      isDayOff: false,
+      message: '',
       form: {
         orderDay: '',
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: '',
+        phoneNumber: ''
       },
 
       comment: {},
 
       place: {
         services: [],
-        voucherCreate: [],
+        voucherCreate: []
       },
       time: [],
-      price: {},
-    };
+      price: {}
+    }
   },
 
   // watch: {
@@ -209,32 +262,49 @@ export default {
   // },
   methods: {
     async getData(day) {
-      const [stadium, time] = await Promise.all([getPlaceById(this.$route.params.id), getTime(this.$route.params.id, { day })]);
+      const [stadium, time] = await Promise.all([
+        getPlaceById(this.$route.params.id),
+        getTime(this.$route.params.id, { day })
+      ])
 
-      this.place = stadium.data.data;
-      this.time = time.data.data;
+      this.place = stadium.data.data
+
+      console.log(time.data.data)
+      if (time.data.data.messgae) {
+        this.isDayOff = true
+        this.message = time.data.data.messgae
+        return false
+      }
+      this.isDayOff = false
+      this.time = time.data.data
     },
 
     async changeDay(day) {
-      this.form.timeBooks = [];
-      this.price = {};
-      const res = await getTime(this.$route.params.id, { day });
-      this.time = res.data.data;
+      this.form.timeBooks = []
+      this.price = {}
+      const res = await getTime(this.$route.params.id, { day })
+      if (res.data.data.messgae) {
+        this.isDayOff = true
+        this.message = res.data.data.messgae
+        return false
+      }
+      this.isDayOff = false
+      this.time = res.data.data
     },
 
     async sendFormData() {
       try {
-        this.loading = true;
+        this.loading = true
 
         if (Object.keys(this.price).length) {
-          this._placeOrder();
+          this._placeOrder()
         } else {
-          this._getPrice();
+          this._getPrice()
         }
       } catch (e) {
-        this.$vmess.error('There is an error');
+        this.$vmess.error('There is an error')
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
@@ -242,64 +312,64 @@ export default {
       try {
         const sendData = {
           ...this.comment,
-          place: { id: this.place.id },
-        };
-        const res = await createComment(sendData);
-        sendData.log(res);
+          place: { id: this.place.id }
+        }
+        const res = await createComment(sendData)
+        sendData.log(res)
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
 
     async _getPrice() {
-      const formData = this._createFormData();
-      const res = await applyVoucher(formData);
+      const formData = this._createFormData()
+      const res = await applyVoucher(formData)
       this.price = {
         ...res.data,
-        moneyRes: this._getMoney(res.data),
-      };
+        moneyRes: this._getMoney(res.data)
+      }
     },
 
     async _placeOrder() {
-      const formData = this._createFormData();
+      const formData = this._createFormData()
 
       if (!this.$store.getters['token']) {
-        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này');
+        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này')
       }
 
-      await order(formData);
-      this.price = {};
-      this._resetForm();
-      this.form.orderDay = getDay(Date.now());
-      await this.getData(this.form.orderDay);
+      await order(formData)
+      this.price = {}
+      this._resetForm()
+      this.form.orderDay = getDay(Date.now())
+      await this.getData(this.form.orderDay)
 
-      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!');
+      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!')
     },
 
     _createFormData() {
       return {
         ...this.form,
         services: this.form.services?.map((item) => {
-          return this.place.services[item];
+          return this.place.services[item]
         }),
 
         voucher: this.form.voucher?.map((item) => {
-          return this.place.voucherCreate[item];
+          return this.place.voucherCreate[item]
         }),
 
         place: {
-          id: this.place.id,
-        },
-      };
+          id: this.place.id
+        }
+      }
     },
 
     _getMoney(data) {
-      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown);
-      console.log(moneyRes);
+      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown)
+      console.log(moneyRes)
       if (moneyRes >= 0) {
-        return moneyRes;
+        return moneyRes
       } else {
-        return 0;
+        return 0
       }
     },
 
@@ -309,16 +379,16 @@ export default {
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: '',
-      };
+        phoneNumber: ''
+      }
     },
 
     isVoucherAvailable(isActive, endDate) {
-      const now = moment(Date.now()).format('yyyy/MM/dd');
-      return moment(endDate).isBefore(now) && isActive;
-    },
-  },
-};
+      const now = moment(Date.now()).format('yyyy/MM/dd')
+      return moment(endDate).isBefore(now) && isActive
+    }
+  }
+}
 </script>
 <style lang="css" scoped>
 .detail-items {
