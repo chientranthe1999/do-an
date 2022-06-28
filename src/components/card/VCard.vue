@@ -14,7 +14,7 @@
         </div>
       </div>
       <p>
-        Giá chỉ từ: <span class="text-[#3a6026] font-[700]">{{ initData.priceMin }}đ</span> / Trận
+        Giá chỉ từ: <span class="text-[#3a6026] font-[700]">{{ initData.priceMin | formatMoney }}</span> / Trận
       </p>
       <p class="flex justify-between">
         <span><i class="el-icon-check" />Wifi</span>

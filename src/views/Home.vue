@@ -92,7 +92,7 @@
     </div>
 
     <div v-else-if="searchResults.length">
-      <el-row :gutter="24" class="mb-[2em]">
+      <el-row :gutter="24" class="mb-[2em] flex-wrap" type="flex">
         <el-col
           :xs="12"
           :md="12"
