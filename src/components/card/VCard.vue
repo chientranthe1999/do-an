@@ -3,7 +3,7 @@
     class="card-item cursor-pointer rounded-[4px]"
     @click="$router.push({ name: 'InforDetail', params: { id: initData.id } })"
   >
-    <img class="w-full h-[200px]" :src="initData.imageDetails[0]" />
+    <img class="w-full h-[200px] object-cover" :src="initData.imageDetails[0]" />
     <div class="card-content">
       <p class="font-[700] text-lg pc:text-[1.25rem]">{{ initData.name }}</p>
       <p class="">Địa chỉ: {{ initData.address }}</p>
