@@ -21,12 +21,22 @@
         </el-col>
       </el-row>
 
-      <el-pagination :hide-on-single-page="true" align="center" background :total="total" :page-size="limit" :current-page="page" layout="prev, pager, next" class="py-[1em]" @current-change="changePage" />
+      <el-pagination
+        :hide-on-single-page="true"
+        align="center"
+        background
+        :total="total"
+        :page-size="limit"
+        :current-page="page"
+        layout="prev, pager, next"
+        class="py-[1em]"
+        @current-change="changePage"
+      />
     </main>
   </div>
 </template>
 <script>
-import { findOpponent } from '@/api/opponent';
+import { findOpponent } from '@/api/opponent'
 export default {
   data() {
     return {
@@ -34,42 +44,42 @@ export default {
       isOpen: false,
       total: 0,
       page: 1,
-      limit: 4,
+      limit: 20,
       reloadPagination: 1,
-      results: [],
-    };
+      results: []
+    }
   },
   async created() {
-    await this.findOpponent();
+    await this.findOpponent()
   },
   methods: {
     async findOpponent() {
       try {
         const res = await findOpponent({
           page: this.page,
-          pageSize: this.limit,
-        });
-        console.log(res);
+          pageSize: this.limit
+        })
+        console.log(res)
         this.results = res.data.data.records.map((item) => {
           return {
             image: item.image,
             user: item?.user?.fullName,
             phone: item.phone,
             title: item.title,
-            content: item.content,
-          };
-        });
-        this.total = res.data.data.total;
+            content: item.content
+          }
+        })
+        this.total = res.data.data.total
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     async changePage(page) {
-      this.page = page;
-      await this.findOpponent();
-    },
-  },
-};
+      this.page = page
+      await this.findOpponent()
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .header::before {
