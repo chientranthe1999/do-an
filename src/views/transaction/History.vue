@@ -5,27 +5,15 @@
     </header>
     <div class="content-main-container">
       <div class="bg-white box-shadow-1 p-[0.5em] rounded-md">
-        <v-table
-          :table-data="results"
-          :columns="cols"
-          :limit="limit"
-          :page="page"
-          :total="total"
-          @onChangePage="changePage"
-        >
+        <v-table :table-data="results" :columns="cols" :limit="limit" :page="page" :total="total" @onChangePage="changePage">
           <template #status="{ row }">
-            <div
-              class="text-center bg-[#00b5ad] text-[white] rounded-lg py-[0.5rem] w-[80px] mx-auto"
-              v-if="row.status"
-            >
-              Done
-            </div>
+            <div class="text-center bg-[#00b5ad] text-[white] rounded-lg py-[0.5rem] w-[80px] mx-auto" v-if="row.status">Done</div>
             <el-tag type="warning" v-else>Waiting</el-tag>
           </template>
 
           <template #time="{ row }">
             <div>
-              <el-tag v-for="item in row.time" :key="item" class="mr-2 mb-2" type="success">{{ item }}</el-tag>
+              <el-tag v-for="item in row.time" :key="item" class="mb-2 mr-2" type="success">{{ item }}</el-tag>
             </div>
           </template>
 
@@ -41,10 +29,10 @@
   </div>
 </template>
 <script>
-import { getOrder } from '@/api/order'
+import { getOrder } from '@/api/order';
 export default {
   async created() {
-    await this.getData()
+    await this.getData();
   },
 
   data() {
@@ -59,19 +47,19 @@ export default {
 
       cols: [
         {
-          prop: 'stadium',
+          prop: 'name',
           label: 'Sân',
-          minWidth: '20'
+          minWidth: '20',
         },
         {
           prop: 'time',
           label: 'Thời gian',
-          minWidth: '20'
+          minWidth: '20',
         },
         {
           prop: 'totalMoney',
           label: 'Tổng tiền',
-          minWidth: '10'
+          minWidth: '10',
         },
         // {
         //   prop: 'status',
@@ -81,60 +69,60 @@ export default {
         {
           prop: 'status',
           label: 'Trạng thái',
-          minWidth: '10'
+          minWidth: '10',
         },
         {
           prop: 'dayOrder',
           label: 'Ngày đặt',
-          minWidth: '10'
-        }
-      ]
-    }
+          minWidth: '10',
+        },
+      ],
+    };
   },
 
   methods: {
     async changePage(page) {
-      this.page = page
-      await this.getData()
+      this.page = page;
+      await this.getData();
     },
 
     async getData() {
       try {
-        this.results = []
+        this.results = [];
         const res = await getOrder({
           pageSize: this.limit,
-          page: this.page
-        })
+          page: this.page,
+        });
         if (res.data.records.length) {
           this.results = res.data.records.map((item) => {
             return {
               dayOrder: item.dayOrder,
               status: item.status,
-              stadium: item.place?.address,
+              name: item.place?.name,
               time: this._getTime(item.timeBlocks),
-              totalMoney: this._getMoney(item)
-            }
-          })
-          console.log()
-          this.total = res.data.total
+              totalMoney: this._getMoney(item),
+            };
+          });
+          console.log();
+          this.total = res.data.total;
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
 
     _getTime(times) {
-      if (!times) return ''
+      if (!times) return '';
       return times.map((item) => {
-        return item.timeStart
-      })
+        return item.timeStart;
+      });
     },
 
     _getMoney(money) {
-      return money.money + money.gasFee - money.downPrice
-    }
-  }
-}
+      return money.money + money.gasFee - money.downPrice;
+    },
+  },
+};
 </script>
 <style lang="css" scoped>
 .header::before {

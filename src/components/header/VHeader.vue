@@ -1,40 +1,32 @@
 <template lang="html">
   <header class="p-[1em] mb-[1.5em] box-shadow-1 flex justify-between items-center">
-    <p>Logo</p>
+    <div @click="$router.push('/home')">
+      <img src="@/assets/logo.png" alt="" class="h-[40px] cursor-pointer" />
+    </div>
 
     <div class="flex items-center">
-      <p
-        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
-        @click="$router.push({ name: 'NewsList' })"
-      >
+      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'NewsList' })">
         <img src="@/icons/news.svg" class="icon-class" />
         <span>Tin tức</span>
       </p>
 
-      <p
-        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
-        @click="$router.push({ name: 'FindOpponent' })"
-      >
+      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'FindOpponent' })">
         <img src="@/icons/search.svg" class="icon-class" />
-        <span>Tìm kiếm</span>
+        <span>Tìm đối</span>
       </p>
 
-      <p
-        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
-        @click="$router.push({ name: 'Login' })"
-        v-if="!token"
-      >
+      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'Login' })" v-if="!token">
         <img src="@/icons/user.svg" class="icon-class" />
         <span>Đăng nhập</span>
       </p>
 
-      <div class="right-menu flex items-center" v-else>
+      <div class="flex items-center right-menu" v-else>
         <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center">
           <img src="@/icons/coin.svg" class="icon-class" />
           <span>{{ money }}</span>
         </p>
         <el-dropdown class="avatar-container" trigger="click">
-          <div class="avatar-wrapper no-select flex items-center">
+          <div class="flex items-center avatar-wrapper no-select">
             <el-avatar icon="el-icon-user-solid" class="avt-image" />
             <span>{{ name }}</span>
           </div>
@@ -52,11 +44,7 @@
         </el-dropdown>
       </div>
 
-      <p
-        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
-        @click="$router.push({ name: 'Register' })"
-        v-if="!token"
-      >
+      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'Register' })" v-if="!token">
         <img src="@/icons/register.svg" class="icon-class" />
         <span>Đăng ký</span>
       </p>
@@ -69,25 +57,25 @@ export default {
 
   computed: {
     name() {
-      return this.$store.getters['name']
+      return this.$store.getters['name'];
     },
 
     token() {
-      return this.$store.getters['token']
+      return this.$store.getters['token'];
     },
 
     money() {
-      return this.$store.getters['money']
-    }
+      return this.$store.getters['money'];
+    },
   },
 
   methods: {
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
-  }
-}
+      await this.$store.dispatch('user/logout');
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .icon-class {

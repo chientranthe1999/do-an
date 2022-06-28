@@ -12,7 +12,7 @@
               {{ place.address }}
             </span>
           </p>
-          <img class="w-full mb-[1em]" :src="place.imageDetails[0]" v-if="place.imageDetails[0]" />
+          <img class="w-full mb-[1em] object-contain h-[480px]" :src="place.imageDetails[0]" v-if="place.imageDetails" />
           <p v-html="place.description"></p>
         </section>
 
@@ -24,19 +24,11 @@
             <span><i class="el-icon-star-on text-[#fadb14]" v-for="i in 5" :key="i" /> (1 đánh giá)</span>
 
             <div class="rounded-[5px] border border-[#e5e5e5] p-[1em]">
-              <div class="flex items-center mb-[0.5em] font-[700]">
-                Voting <el-rate class="ml-[0.5em]" v-model="comment.star"></el-rate>
-              </div>
+              <div class="flex items-center mb-[0.5em] font-[700]">Voting <el-rate class="ml-[0.5em]" v-model="comment.star"></el-rate></div>
               <el-form>
                 <el-row :gutter="12">
                   <el-col :md="16">
-                    <el-input
-                      type="textarea"
-                      rows="4"
-                      placeholder="Nhập bình luận của bạn"
-                      class="w-full h-[120px] border-1"
-                      v-model="comment.comment"
-                    />
+                    <el-input type="textarea" rows="4" placeholder="Nhập bình luận của bạn" class="w-full h-[120px] border-1" v-model="comment.comment" />
                   </el-col>
                   <el-col :md="8">
                     <el-form-item>
@@ -61,31 +53,15 @@
         <section>
           <p class="font-bold text-[1.5rem] mb-[1em]">Đặt sân</p>
           <div class="border rounded-lg p-[1em] border-[#e5e5e5] text-center">
-            <p class="card-name flex items-center justify-center">
+            <p class="flex items-center justify-center card-name">
               <img src="@/icons/time.svg" alt="" class="icon-class" />
               Chọn thời gian
             </p>
 
-            <el-date-picker
-              v-model="form.orderDay"
-              type="date"
-              placeholder="Pick a day"
-              class="mb-[1em] w-100"
-              format="yyyy/MM/dd"
-              value-format="yyyy/MM/dd"
-              @change="changeDay"
-            >
-            </el-date-picker>
+            <el-date-picker v-model="form.orderDay" type="date" placeholder="Pick a day" class="mb-[1em] w-100" format="yyyy/MM/dd" value-format="yyyy/MM/dd" @change="changeDay"> </el-date-picker>
             <el-row :gutter="24" class="mb-[1em]" v-if="time.length">
               <el-col :span="8" v-for="item in time" :key="item.time" class="mb-[1em]">
-                <el-checkbox
-                  v-model="form.timeBooks"
-                  border
-                  class="w-full"
-                  :label="item.time"
-                  :disabled="!item.isReady"
-                  @change="_getPrice"
-                >
+                <el-checkbox v-model="form.timeBooks" border class="w-full" :label="item.time" :disabled="!item.isReady" @change="_getPrice">
                   {{ item.time }}
                 </el-checkbox>
               </el-col>
@@ -93,19 +69,13 @@
 
             <!-- service list -->
             <section class="detail-items" v-if="place.services.length">
-              <p class="card-name flex items-center justify-center">
+              <p class="flex items-center justify-center card-name">
                 <img src="@/icons/more.svg" alt="" class="icon-class" />
                 Tiện ích
               </p>
 
               <div v-for="(service, index) in place.services" :key="service.id" class="mb-[1em]">
-                <el-checkbox
-                  v-model="form.services"
-                  border
-                  class="w-full flex items-center"
-                  :label="index"
-                  @change="_getPrice"
-                >
+                <el-checkbox v-model="form.services" border class="flex items-center w-full" :label="index" @change="_getPrice">
                   <div class="flex flex-1">
                     <p class="mr-auto">{{ service.name }}</p>
                     <p>+{{ service.price | formatMoney }}</p>
@@ -116,19 +86,13 @@
 
             <!-- Voucher -->
             <section class="detail-items" v-if="place.voucherCreate.length">
-              <p class="card-name flex items-center justify-center">
+              <p class="flex items-center justify-center card-name">
                 <img src="@/icons/voucher.svg" alt="" class="icon-class" />
                 Voucher
               </p>
 
               <div v-for="(voucher, index) in place.voucherCreate" :key="voucher.id" class="mb-[1em]">
-                <el-checkbox
-                  v-model="form.voucher"
-                  class="w-full h-auto flex items-center"
-                  :label="index"
-                  border
-                  @change="_getPrice"
-                >
+                <el-checkbox v-model="form.voucher" class="flex items-center w-full h-auto" :label="index" border @change="_getPrice" v-if="isVoucherAvailable(voucher.isActive, voucher.endDate)">
                   <div>
                     <div class="flex mb-[4px]">
                       <p class="mr-auto w-[80%] text-left">{{ voucher.name }}</p>
@@ -142,7 +106,7 @@
             </section>
 
             <!-- Phone -->
-            <section class="detail-items border-none" v-if="place.voucherCreate">
+            <section class="border-none detail-items" v-if="place.voucherCreate">
               <p class="card-name">Số điện thoại liên hệ</p>
               <el-input v-model="form.phoneNumber"></el-input>
             </section>
@@ -152,13 +116,8 @@
     </el-row>
 
     <!-- fixed price bar -->
-    <div
-      v-if="price && Object.keys(price).length"
-      class="fixed bottom-0 left-0 border-t-2 border-main fixed-bar py-[1rem] w-full bg-[white] px-[1em] z-10"
-    >
-      <div
-        class="absolute top-[-15%] bg-blue text-[white] py-[4px] px-[18px] right-[5%] rounded-lg text-xl cursor-pointer"
-      >
+    <div v-if="price && Object.keys(price).length" class="fixed bottom-0 left-0 border-t-2 border-main fixed-bar py-[1rem] w-full bg-[white] px-[1em] z-10">
+      <div class="absolute top-[-15%] bg-blue text-[white] py-[4px] px-[18px] right-[5%] rounded-lg text-xl cursor-pointer">
         <i class="el-icon-arrow-down"></i>
       </div>
 
@@ -171,27 +130,27 @@
               <img src="@/icons/fee.svg" class="icon-class" alt="" />
               <span class="font-[700]">Phí thuê sân + Tiện ích</span>
             </div>
-            <span class="text-main flex-1 text-right">{{ price.money | formatMoney }}</span>
+            <span class="flex-1 text-right text-main">{{ price.money | formatMoney }}</span>
           </div>
           <div class="flex items-center py-[0.5em] w-full">
             <div class="w-[60%] flex items-center">
               <img src="@/icons/fee.svg" class="icon-class" alt="" />
               <span class="font-[700]">Phí dịch vụ</span>
             </div>
-            <span class="text-main flex-1 text-right">{{ price.gasFee | formatMoney }}</span>
+            <span class="flex-1 text-right text-main">{{ price.gasFee | formatMoney }}</span>
           </div>
           <div class="flex items-center py-[0.5em] w-full">
             <div class="w-[60%] flex items-center">
               <img src="@/icons/voucher.svg" class="icon-class" alt="" />
               <span class="font-[700]">Voucher</span>
             </div>
-            <span class="text-main flex-1 text-right">-{{ price.moneyDown | formatMoney }}</span>
+            <span class="flex-1 text-right text-main">-{{ price.moneyDown | formatMoney }}</span>
           </div>
         </div>
         <div class="w-[20%] text-center border-main border-r-[1px] border-l-[1px] mx-[1em]">
           <p class="mb-[0.5em] text-xl font-[600]">Số tiền cần thanh toán</p>
-          <p class="text-main text-xl font-bold" v-if="price.moneyRes">{{ price.moneyRes | formatMoney }}</p>
-          <p class="text-main text-xl font-bold" v-else>0 VND</p>
+          <p class="text-xl font-bold text-main" v-if="price.moneyRes">{{ price.moneyRes | formatMoney }}</p>
+          <p class="text-xl font-bold text-main" v-else>0 VND</p>
         </div>
 
         <el-button type="success" class="w-[140px] h-[40px] mx-[1em] flex-1" @click="sendFormData">Đặt sân</el-button>
@@ -200,20 +159,20 @@
   </div>
 </template>
 <script>
-import { getPlaceById, getTime, createComment } from '@/api/place'
-import { applyVoucher, order } from '@/api/order'
-import { getDay } from '@/utils/day'
-import { VOUNCHER_TYPE } from '@/utils/constants'
+import { getPlaceById, getTime, createComment } from '@/api/place';
+import { applyVoucher, order } from '@/api/order';
+import { getDay } from '@/utils/day';
+import { VOUNCHER_TYPE } from '@/utils/constants';
 
+import moment from 'moment';
 export default {
   name: 'Detail',
-
   async created() {
     try {
-      this.form.orderDay = getDay(Date.now())
-      await this.getData(this.form.orderDay)
+      this.form.orderDay = getDay(Date.now());
+      await this.getData(this.form.orderDay);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   },
   data() {
@@ -226,18 +185,18 @@ export default {
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: ''
+        phoneNumber: '',
       },
 
       comment: {},
 
       place: {
         services: [],
-        voucherCreate: []
+        voucherCreate: [],
       },
       time: [],
-      price: {}
-    }
+      price: {},
+    };
   },
 
   // watch: {
@@ -250,35 +209,32 @@ export default {
   // },
   methods: {
     async getData(day) {
-      const [stadium, time] = await Promise.all([
-        getPlaceById(this.$route.params.id),
-        getTime(this.$route.params.id, { day })
-      ])
+      const [stadium, time] = await Promise.all([getPlaceById(this.$route.params.id), getTime(this.$route.params.id, { day })]);
 
-      this.place = stadium.data.data
-      this.time = time.data.data
+      this.place = stadium.data.data;
+      this.time = time.data.data;
     },
 
     async changeDay(day) {
-      this.form.timeBooks = []
-      this.price = {}
-      const res = await getTime(this.$route.params.id, { day })
-      this.time = res.data.data
+      this.form.timeBooks = [];
+      this.price = {};
+      const res = await getTime(this.$route.params.id, { day });
+      this.time = res.data.data;
     },
 
     async sendFormData() {
       try {
-        this.loading = true
+        this.loading = true;
 
         if (Object.keys(this.price).length) {
-          this._placeOrder()
+          this._placeOrder();
         } else {
-          this._getPrice()
+          this._getPrice();
         }
       } catch (e) {
-        this.$vmess.error('There is an error')
+        this.$vmess.error('There is an error');
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
 
@@ -286,64 +242,64 @@ export default {
       try {
         const sendData = {
           ...this.comment,
-          place: { id: this.place.id }
-        }
-        const res = await createComment(sendData)
-        sendData.log(res)
+          place: { id: this.place.id },
+        };
+        const res = await createComment(sendData);
+        sendData.log(res);
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     },
 
     async _getPrice() {
-      const formData = this._createFormData()
-      const res = await applyVoucher(formData)
+      const formData = this._createFormData();
+      const res = await applyVoucher(formData);
       this.price = {
         ...res.data,
-        moneyRes: this._getMoney(res.data)
-      }
+        moneyRes: this._getMoney(res.data),
+      };
     },
 
     async _placeOrder() {
-      const formData = this._createFormData()
+      const formData = this._createFormData();
 
       if (!this.$store.getters['token']) {
-        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này')
+        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này');
       }
 
-      await order(formData)
-      this.price = {}
-      this._resetForm()
-      this.form.orderDay = getDay(Date.now())
-      await this.getData(this.form.orderDay)
+      await order(formData);
+      this.price = {};
+      this._resetForm();
+      this.form.orderDay = getDay(Date.now());
+      await this.getData(this.form.orderDay);
 
-      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!')
+      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!');
     },
 
     _createFormData() {
       return {
         ...this.form,
         services: this.form.services?.map((item) => {
-          return this.place.services[item]
+          return this.place.services[item];
         }),
 
         voucher: this.form.voucher?.map((item) => {
-          return this.place.voucherCreate[item]
+          return this.place.voucherCreate[item];
         }),
 
         place: {
-          id: this.place.id
-        }
-      }
+          id: this.place.id,
+        },
+      };
     },
 
     _getMoney(data) {
-      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown)
-      console.log(moneyRes)
+      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown);
+      console.log(moneyRes);
       if (moneyRes >= 0) {
-        return moneyRes
+        return moneyRes;
       } else {
-        return 0
+        return 0;
       }
     },
 
@@ -353,11 +309,16 @@ export default {
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: ''
-      }
-    }
-  }
-}
+        phoneNumber: '',
+      };
+    },
+
+    isVoucherAvailable(isActive, endDate) {
+      const now = moment(Date.now()).format('yyyy/MM/dd');
+      return moment(endDate).isBefore(now) && isActive;
+    },
+  },
+};
 </script>
 <style lang="css" scoped>
 .detail-items {
