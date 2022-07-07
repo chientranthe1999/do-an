@@ -7,7 +7,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en'
 
 import '@/style/index.css'
-import '@/style/home.css'
 
 import ToastMessage from '@/utils/message'
 Vue.prototype.$vmess = ToastMessage
@@ -33,5 +32,5 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
-  render: (h) => h(App)
+  render: (h) => h(App),
 }).$mount('#app')
