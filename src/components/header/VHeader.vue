@@ -5,17 +5,27 @@
     </div>
 
     <div class="flex items-center">
-      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'NewsList' })">
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'NewsList' })"
+      >
         <img src="@/icons/news.svg" class="icon-class" />
         <span>Tin tức</span>
       </p>
 
-      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'FindOpponent' })">
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'FindOpponent' })"
+      >
         <img src="@/icons/search.svg" class="icon-class" />
         <span>Tìm đối</span>
       </p>
 
-      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'Login' })" v-if="!token">
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'Login' })"
+        v-if="!token"
+      >
         <img src="@/icons/user.svg" class="icon-class" />
         <span>Đăng nhập</span>
       </p>
@@ -23,7 +33,7 @@
       <div class="flex items-center right-menu" v-else>
         <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center">
           <img src="@/icons/coin.svg" class="icon-class" />
-          <span>{{ money }}</span>
+          <span>{{ money | formatNumber }}</span>
         </p>
         <el-dropdown class="avatar-container" trigger="click">
           <div class="flex items-center avatar-wrapper no-select">
@@ -44,7 +54,11 @@
         </el-dropdown>
       </div>
 
-      <p class="mr-[1.5em] hover:text-main cursor-pointer flex items-center" @click="$router.push({ name: 'Register' })" v-if="!token">
+      <p
+        class="mr-[1.5em] hover:text-main cursor-pointer flex items-center"
+        @click="$router.push({ name: 'Register' })"
+        v-if="!token"
+      >
         <img src="@/icons/register.svg" class="icon-class" />
         <span>Đăng ký</span>
       </p>
@@ -57,25 +71,25 @@ export default {
 
   computed: {
     name() {
-      return this.$store.getters['name'];
+      return this.$store.getters['name']
     },
 
     token() {
-      return this.$store.getters['token'];
+      return this.$store.getters['token']
     },
 
     money() {
-      return this.$store.getters['money'];
-    },
+      return this.$store.getters['money']
+    }
   },
 
   methods: {
     async logout() {
-      await this.$store.dispatch('user/logout');
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
-    },
-  },
-};
+      await this.$store.dispatch('user/logout')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .icon-class {

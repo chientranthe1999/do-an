@@ -73,7 +73,7 @@
       <section v-for="(item, i) in places" :key="'type' + i">
         <div v-if="item.place.length">
           <p class="card-header">{{ item.name }}</p>
-          <el-row :gutter="24" class="mb-[2em]">
+          <el-row :gutter="24" class="mb-[2em] flex-wrap" type="flex">
             <el-col
               :xs="12"
               :md="12"
@@ -84,7 +84,7 @@
               :key="'stadium' + i"
               class="mb-[1em]"
             >
-              <v-card :init-data="place" />
+              <v-card :init-data="place" class="h-full" />
             </el-col>
           </el-row>
         </div>

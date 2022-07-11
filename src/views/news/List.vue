@@ -5,16 +5,17 @@
       <p class="text-[#172948] text-[2.5rem] italic font-semibold uppercase">Thế giới thể thao</p>
     </header>
 
-    <section>
-      <!-- <p class="card-header">{{ item.name }}</p> -->
-      <el-row :gutter="24" class="mb-[2em]" v-if="results.length">
-        <el-col :xs="12" :md="6" :sm="12" :lg="6" :xl="6" class="mb-[1em]" v-for="item in results" :key="item.id">
-          <NewsItem :initData="item" />
-        </el-col>
-      </el-row>
-
-      <el-empty description="No result" v-else></el-empty>
+    <section v-if="Object.keys(results).length">
+      <div v-for="(news, key, index) in results" :key="index + 'type'">
+        <p class="card-header">{{ key }}</p>
+        <el-row :gutter="24" class="mb-[2em]">
+          <el-col :xs="12" :md="6" :sm="12" :lg="6" :xl="6" class="mb-[1em]" v-for="item in news" :key="item.id">
+            <NewsItem :initData="item" />
+          </el-col>
+        </el-row>
+      </div>
     </section>
+    <el-empty description="No result" v-else></el-empty>
     <el-pagination
       :key="reloadPagination"
       :hide-on-single-page="true"
@@ -67,15 +68,16 @@ export default {
           page: this.page,
           pageSize: this.limit
         })
-        this.results = res.data.data.records.map((item) => {
-          return {
+        this.results = res.data.data.records.reduce((preData, item) => {
+          preData[item.typeArticle.title] = preData[item.typeArticle.title] || []
+          preData[item.typeArticle.title].push({
             id: item.id,
-            name: item.name,
             image: item.image,
             title: item.title,
             type: item.typeArticle.title
-          }
-        })
+          })
+          return preData
+        }, {})
 
         this.total = res.data.data.total
       } catch (e) {
