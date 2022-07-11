@@ -143,8 +143,7 @@ export default {
             name: this.form.fullName
           }
         }
-        const res = await register(sendData)
-        console.log(res)
+        await register(sendData)
         this.$vmess.success('Chúc mừng bạn đã đăng ký thành công!')
         this.$router.push('/login')
       } catch (e) {

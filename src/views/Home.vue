@@ -157,7 +157,6 @@ export default {
     async getCities() {
       const { data } = await getAddress()
       this.cities = data
-      console.log(this.cities)
     },
 
     async onCityChange() {
@@ -166,7 +165,6 @@ export default {
           this.filters.districtCode = null
           return false
         }
-        console.log(this.filters.districtCode)
         const { data } = await getAddress({ cityCode: this.filters.cityCode })
         this.districts = data
       } catch (e) {
@@ -195,7 +193,6 @@ export default {
         })
 
         this.searchResults = data.data.records
-        console.log(this.searchResults)
       } catch (e) {
         this.$vmess.error('Đã có lỗi xảy ra xin vui lòng thử  lại sau')
       }

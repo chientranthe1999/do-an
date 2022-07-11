@@ -59,7 +59,6 @@ export default {
           page: this.page,
           pageSize: this.limit
         })
-        console.log(res)
         this.results = res.data.data.records.map((item) => {
           return {
             image: item.image,

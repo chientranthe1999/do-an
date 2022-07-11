@@ -320,7 +320,6 @@ export default {
 
     _getMoney(data) {
       const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown);
-      console.log(moneyRes);
       if (moneyRes >= 0) {
         return moneyRes;
       } else {

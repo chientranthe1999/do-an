@@ -57,7 +57,6 @@ export default {
       try {
         this.loading = true
         const isValid = await this.$refs.form.validate()
-        console.log(isValid)
         if (isValid) {
           const { data } = await createPayment(this.form)
           location.href = data.url

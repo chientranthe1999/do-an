@@ -32,7 +32,6 @@ router.beforeEach(async (to, from, next) => {
           await store.dispatch('user/getInfor')
           next()
         } catch (error) {
-          console.log(error)
           await store.dispatch('user/resetToken')
           next(`/login`)
           NProgress.done()
