@@ -12,7 +12,11 @@
               {{ place.address }}
             </span>
           </p>
-          <img class="w-full mb-[1em] object-contain h-[480px]" :src="place.imageDetails[0]" v-if="place.imageDetails" />
+          <img
+            class="w-full mb-[1em] object-contain h-[480px]"
+            :src="place.imageDetails[0]"
+            v-if="place.imageDetails"
+          />
           <p v-html="place.description"></p>
         </section>
 
@@ -24,11 +28,19 @@
             <span><i class="el-icon-star-on text-[#fadb14]" v-for="i in 5" :key="i" /> (1 đánh giá)</span>
 
             <div class="rounded-[5px] border border-[#e5e5e5] p-[1em]">
-              <div class="flex items-center mb-[0.5em] font-[700]">Voting <el-rate class="ml-[0.5em]" v-model="comment.star"></el-rate></div>
+              <div class="flex items-center mb-[0.5em] font-[700]">
+                Voting <el-rate class="ml-[0.5em]" v-model="comment.star"></el-rate>
+              </div>
               <el-form>
                 <el-row :gutter="12">
                   <el-col :md="24">
-                    <el-input type="textarea" rows="4" placeholder="Nhập bình luận của bạn" class="w-full h-[120px] border-1" v-model="comment.comment" />
+                    <el-input
+                      type="textarea"
+                      rows="4"
+                      placeholder="Nhập bình luận của bạn"
+                      class="w-full h-[120px] border-1"
+                      v-model="comment.comment"
+                    />
                   </el-col>
                   <!-- <el-col :md="8">
                     <el-form-item>
@@ -52,7 +64,11 @@
         <section class="detail-items" v-if="place.comments.length">
           <p class="font-bold text-[1.25rem] mb-[1em]">Đánh giá/Bình luận</p>
 
-          <div class="flex p-1 mb-3 rounded-md border-[#ededed] border" v-for="(item, i) in place.comments" :key="'comment' + i">
+          <div
+            class="flex p-1 mb-3 rounded-md border-[#ededed] border"
+            v-for="(item, i) in place.comments"
+            :key="'comment' + i"
+          >
             <el-avatar icon="el-icon-user-solid" class="mr-2 avt-image" />
             <div>
               <span class="font-[500]">Username</span>
@@ -74,10 +90,26 @@
               Chọn thời gian
             </p>
 
-            <el-date-picker v-model="form.orderDay" type="date" placeholder="Pick a day" class="mb-[1em] w-100" format="yyyy/MM/dd" value-format="yyyy/MM/dd" @change="changeDay"> </el-date-picker>
+            <el-date-picker
+              v-model="form.orderDay"
+              type="date"
+              placeholder="Pick a day"
+              class="mb-[1em] w-100"
+              format="yyyy/MM/dd"
+              value-format="yyyy/MM/dd"
+              @change="changeDay"
+            >
+            </el-date-picker>
             <el-row :gutter="24" class="mb-[1em]" v-if="time.length">
               <el-col :span="8" v-for="item in time" :key="item.time" class="mb-[1em]">
-                <el-checkbox v-model="form.timeBooks" border class="w-full" :label="item.time" :disabled="!item.isReady" @change="_getPrice">
+                <el-checkbox
+                  v-model="form.timeBooks"
+                  border
+                  class="w-full"
+                  :label="item.time"
+                  :disabled="!item.isReady"
+                  @change="_getPrice"
+                >
                   {{ item.time }}
                 </el-checkbox>
               </el-col>
@@ -91,7 +123,13 @@
                 </p>
 
                 <div v-for="(service, index) in place.services" :key="service.id" class="mb-[1em]">
-                  <el-checkbox v-model="form.services" border class="flex items-center w-full" :label="index" @change="_getPrice">
+                  <el-checkbox
+                    v-model="form.services"
+                    border
+                    class="flex items-center w-full"
+                    :label="index"
+                    @change="_getPrice"
+                  >
                     <div class="flex flex-1">
                       <p class="mr-auto">{{ service.name }}</p>
                       <p>+{{ service.price | formatMoney }}</p>
@@ -108,7 +146,14 @@
                 </p>
 
                 <div v-for="(voucher, index) in place.voucherCreate" :key="voucher.id" class="mb-[1em]">
-                  <el-checkbox v-model="form.voucher" class="flex items-center w-full h-auto" :label="index" border @change="_getPrice" v-if="isVoucherAvailable(voucher.isActive, voucher.endDate)">
+                  <el-checkbox
+                    v-model="form.voucher"
+                    class="flex items-center w-full h-auto"
+                    :label="index"
+                    border
+                    @change="_getPrice"
+                    v-if="isVoucherAvailable(voucher.isActive, voucher.endDate)"
+                  >
                     <div>
                       <div class="flex mb-[4px]">
                         <p class="mr-auto w-[80%] text-left">{{ voucher.name }}</p>
@@ -139,7 +184,10 @@
     </el-row>
 
     <!-- fixed price bar -->
-    <div v-if="price && Object.keys(price).length" class="fixed bottom-0 left-0 border-t-2 border-main fixed-bar py-[1rem] w-full bg-[white] px-[1em] z-10">
+    <div
+      v-if="price && Object.keys(price).length"
+      class="fixed bottom-0 left-0 border-t-2 border-main fixed-bar py-[1rem] w-full bg-[white] px-[1em] z-10"
+    >
       <!-- <div class="absolute top-[-15%] bg-blue text-[white] py-[4px] px-[18px] right-[5%] rounded-lg text-xl cursor-pointer">
         <i class="el-icon-arrow-down"></i>
       </div> -->
@@ -182,20 +230,20 @@
   </div>
 </template>
 <script>
-import { getPlaceById, getTime, createComment } from '@/api/place';
-import { applyVoucher, order } from '@/api/order';
-import { getDay } from '@/utils/day';
-import { VOUNCHER_TYPE } from '@/utils/constants';
+import { getPlaceById, getTime, createComment } from '@/api/place'
+import { applyVoucher, order } from '@/api/order'
+import { getDay } from '@/utils/day'
+import { VOUNCHER_TYPE } from '@/utils/constants'
 
-import moment from 'moment';
+import moment from 'moment'
 export default {
   name: 'Detail',
   async created() {
     try {
-      this.form.orderDay = getDay(Date.now());
-      await this.getData(this.form.orderDay);
+      this.form.orderDay = getDay(Date.now())
+      await this.getData(this.form.orderDay)
     } catch (e) {
-      console.log(e);
+      console.log(e)
     }
   },
   data() {
@@ -210,29 +258,29 @@ export default {
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: '',
+        phoneNumber: ''
       },
 
       comment: {
         star: 0,
-        comment: '',
+        comment: ''
       },
 
       place: {
         services: [],
         voucherCreate: [],
-        comments: [],
+        comments: []
       },
       time: [],
-      price: {},
-    };
+      price: {}
+    }
   },
 
   methods: {
     async getData(day) {
-      const [stadium] = await Promise.all([getPlaceById(this.$route.params.id), this._getTime(day)]);
+      const [stadium] = await Promise.all([getPlaceById(this.$route.params.id), this._getTime(day)])
 
-      this.place = stadium.data.data;
+      this.place = stadium.data.data
     },
 
     /**
@@ -240,24 +288,20 @@ export default {
      * @param {Datetime} day format "yyyy/MM/dd"
      */
     async changeDay(day) {
-      this.form.timeBooks = [];
-      this.price = {};
-      await this._getTime(day);
+      this.form.timeBooks = []
+      this.price = {}
+      await this._getTime(day)
     },
 
     async sendFormData() {
       try {
-        this.loading = true;
+        this.loading = true
 
-        if (Object.keys(this.price).length) {
-          this._placeOrder();
-        } else {
-          this._getPrice();
-        }
+        this._placeOrder()
       } catch (e) {
-        this.$vmess.error('There is an error');
+        this.$vmess.error('There is an error')
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
@@ -265,65 +309,70 @@ export default {
       try {
         const sendData = {
           ...this.comment,
-          place: { id: this.place.id },
-        };
-        await createComment(sendData);
-        this.form.orderDay = getDay(Date.now());
-        await this.getData(this.form.orderDay);
-        this.$vmess.success('Cảm ơn bạn đã gửi đánh giá');
+          place: { id: this.place.id }
+        }
+        await createComment(sendData)
+        this.form.orderDay = getDay(Date.now())
+        await this.getData(this.form.orderDay)
+        this.$vmess.success('Cảm ơn bạn đã gửi đánh giá')
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
 
     async _getPrice() {
-      const formData = this._createFormData();
-      const res = await applyVoucher(formData);
+      const formData = this._createFormData()
+      const res = await applyVoucher(formData)
       this.price = {
         ...res.data,
-        moneyRes: this._getMoney(res.data),
-      };
+        moneyRes: this._getMoney(res.data)
+      }
     },
 
     async _placeOrder() {
-      const formData = this._createFormData();
+      const formData = this._createFormData()
 
       if (!this.$store.getters['token']) {
-        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này');
+        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này')
       }
 
-      await order(formData);
-      this.price = {};
-      this._resetForm();
-      this.form.orderDay = getDay(Date.now());
-      await this.getData(this.form.orderDay);
+      if (this.price.moneyRes > this.$store.getters['money']) {
+        this.$vmess.error('Bạn không đủ tiền để đặt sân! Hãy nạp thêm tiền để tiếp tục')
+        return false
+      }
 
-      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!');
+      await order(formData)
+      this.price = {}
+      this._resetForm()
+      this.form.orderDay = getDay(Date.now())
+      await this.getData(this.form.orderDay)
+
+      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!')
     },
 
     _createFormData() {
       return {
         ...this.form,
         services: this.form.services?.map((item) => {
-          return this.place.services[item];
+          return this.place.services[item]
         }),
 
         voucher: this.form.voucher?.map((item) => {
-          return this.place.voucherCreate[item];
+          return this.place.voucherCreate[item]
         }),
 
         place: {
-          id: this.place.id,
-        },
-      };
+          id: this.place.id
+        }
+      }
     },
 
     _getMoney(data) {
-      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown);
+      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown)
       if (moneyRes >= 0) {
-        return moneyRes;
+        return moneyRes
       } else {
-        return 0;
+        return 0
       }
     },
 
@@ -333,28 +382,28 @@ export default {
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: '',
-      };
+        phoneNumber: ''
+      }
     },
 
     async _getTime(day) {
-      this.time = [];
-      const res = await getTime(this.$route.params.id, { day });
+      this.time = []
+      const res = await getTime(this.$route.params.id, { day })
       if (res.data.data.messgae) {
-        this.isDayOff = true;
-        this.message = res.data.data.messgae;
-        return false;
+        this.isDayOff = true
+        this.message = res.data.data.messgae
+        return false
       }
-      this.isDayOff = false;
-      this.time = res.data.data;
+      this.isDayOff = false
+      this.time = res.data.data
     },
 
     isVoucherAvailable(isActive, endDate) {
-      const now = moment(Date.now()).format('yyyy/MM/dd');
-      return moment(endDate).isBefore(now) && isActive;
-    },
-  },
-};
+      const now = moment(Date.now()).format('yyyy/MM/dd')
+      return moment(endDate).isBefore(now) && isActive
+    }
+  }
+}
 </script>
 <style lang="css" scoped>
 .detail-items {
