@@ -14,3 +14,7 @@ export function getOrder(params) {
   }
   return axios.get('/order/history', { params })
 }
+
+export function reportOrder(data) {
+  return axios.post('/order/report-order', data)
+}

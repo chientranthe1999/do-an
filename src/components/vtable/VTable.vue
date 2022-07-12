@@ -27,9 +27,9 @@
           :type="column.type ? column.type : ''"
           v-bind="column"
         >
-          <template #default="{ row }">
+          <template #default="{ row, $index }">
             <div>
-              <slot :name="column.prop" :row="row">{{ row[column.prop] }}</slot>
+              <slot :name="column.prop" :row="row" :pos="$index">{{ row[column.prop] }}</slot>
             </div>
           </template>
         </el-table-column>

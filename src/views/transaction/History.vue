@@ -35,13 +35,22 @@
               <p class="text-center" v-else>0 VND</p>
             </div>
           </template>
+
+          <template #action="{ pos }">
+            <div class="text-center">
+              <el-button type="danger" class="bg-[#F56C6C]" icon="el-icon-warning" @click="reportOrder(pos)" circle>
+              </el-button>
+            </div>
+          </template>
         </v-table>
       </div>
     </div>
   </div>
 </template>
+
+<!-- eslint-disable no-unused-vars -->
 <script>
-import { getOrder } from '@/api/order'
+import { getOrder, reportOrder } from '@/api/order'
 export default {
   async created() {
     await this.getData()
@@ -56,37 +65,38 @@ export default {
       limit: 10,
       gas: 10,
       results: [],
+      rawData: [],
 
       cols: [
         {
           prop: 'name',
           label: 'Sân',
-          minWidth: '20'
+          minWidth: '200'
         },
         {
           prop: 'time',
           label: 'Thời gian',
-          minWidth: '20'
+          minWidth: '200'
         },
         {
           prop: 'totalMoney',
           label: 'Tổng tiền',
-          minWidth: '10'
+          minWidth: '100'
         },
-        // {
-        //   prop: 'status',
-        //   label: 'Số điện thoại',
-        //   minWidth: '15'
-        // },
         {
           prop: 'status',
           label: 'Trạng thái',
-          minWidth: '10'
+          minWidth: '100'
         },
         {
           prop: 'dayOrder',
           label: 'Ngày đặt',
-          minWidth: '10'
+          minWidth: '100'
+        },
+        {
+          prop: 'action',
+          label: '',
+          minWidth: '100'
         }
       ]
     }
@@ -106,6 +116,7 @@ export default {
           page: this.page
         })
         if (res.data.records.length) {
+          this.rawData = res.data.records
           this.results = res.data.records.map((item) => {
             return {
               dayOrder: item.dayOrder,
@@ -115,9 +126,24 @@ export default {
               totalMoney: this._getMoney(item)
             }
           })
-          console.log()
           this.total = res.data.total
         }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async reportOrder(pos) {
+      try {
+        const sendData = this.rawData[pos]
+        console.log(sendData)
+        await reportOrder({
+          ...sendData,
+          services: sendData.place.services,
+          orderDay: sendData.dayOrder,
+          timeBooks: sendData.timeBlocks
+        })
+        this.$vmess.success('Đã gửi báo cáo thành công')
       } catch (error) {
         console.log(error)
       }
