@@ -14,11 +14,11 @@
         </div>
       </div>
       <p>
-        Giá chỉ từ: <span class="text-[#3a6026] font-[700]">{{ initData.priceMin | formatMoney }}</span> / Trận
+        Giá chỉ từ: <span class="text-[#3a6026] font-[700]">{{ initData.priceMin | formatMoney }}</span> / {{initData.timeDistance}} Phút
       </p>
       <p class="flex justify-between">
-        <span><i class="el-icon-check" />Wifi</span>
-        <span><i class="el-icon-check" />Căng tin</span>
+        <!-- <span><i class="el-icon-check" />Wifi</span>
+        <span><i class="el-icon-check" />Căng tin</span> -->
       </p>
     </div>
   </div>

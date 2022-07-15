@@ -152,7 +152,7 @@
                     :label="index"
                     border
                     @change="_getPrice"
-                    v-if="isVoucherAvailable(voucher.isActive, voucher.endDate)"
+                    v-if="isVoucherAvailable(voucher.isActive, voucher.endDate, voucher.amount)"
                   >
                     <div>
                       <div class="flex mb-[4px]">
@@ -161,6 +161,7 @@
                         <p v-else>-{{ voucher.value | formatMoney }}</p>
                       </div>
                       <p class="text-left">Ngày hết hạn: {{ voucher.endDate }}</p>
+                       <p class="text-left mt-1">Số lượng voucher còn: {{ voucher.amount }}</p>
                     </div>
                   </el-checkbox>
                 </div>
@@ -230,20 +231,19 @@
   </div>
 </template>
 <script>
-import { getPlaceById, getTime, createComment } from '@/api/place'
-import { applyVoucher, order } from '@/api/order'
-import { getDay } from '@/utils/day'
-import { VOUNCHER_TYPE } from '@/utils/constants'
+import { getPlaceById, getTime, createComment } from "@/api/place";
+import { applyVoucher, order } from "@/api/order";
+import { getDay } from "@/utils/day";
+import { VOUNCHER_TYPE } from "@/utils/constants";
 
-import moment from 'moment'
 export default {
-  name: 'Detail',
+  name: "Detail",
   async created() {
     try {
-      this.form.orderDay = getDay(Date.now())
-      await this.getData(this.form.orderDay)
+      this.form.orderDay = getDay(Date.now());
+      await this.getData(this.form.orderDay);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   },
   data() {
@@ -252,35 +252,38 @@ export default {
       voucherType: VOUNCHER_TYPE,
       isOpenPrice: false,
       isDayOff: false,
-      message: '',
+      message: "",
       form: {
-        orderDay: '',
+        orderDay: "",
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: ''
+        phoneNumber: "",
       },
 
       comment: {
         star: 0,
-        comment: ''
+        comment: "",
       },
 
       place: {
         services: [],
         voucherCreate: [],
-        comments: []
+        comments: [],
       },
       time: [],
-      price: {}
-    }
+      price: {},
+    };
   },
 
   methods: {
     async getData(day) {
-      const [stadium] = await Promise.all([getPlaceById(this.$route.params.id), this._getTime(day)])
+      const [stadium] = await Promise.all([
+        getPlaceById(this.$route.params.id),
+        this._getTime(day),
+      ]);
 
-      this.place = stadium.data.data
+      this.place = stadium.data.data;
     },
 
     /**
@@ -288,20 +291,20 @@ export default {
      * @param {Datetime} day format "yyyy/MM/dd"
      */
     async changeDay(day) {
-      this.form.timeBooks = []
-      this.price = {}
-      await this._getTime(day)
+      this.form.timeBooks = [];
+      this.price = {};
+      await this._getTime(day);
     },
 
     async sendFormData() {
       try {
-        this.loading = true
+        this.loading = true;
 
-        this._placeOrder()
+        this._placeOrder();
       } catch (e) {
-        this.$vmess.error('There is an error')
+        this.$vmess.error("There is an error");
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
 
@@ -309,101 +312,108 @@ export default {
       try {
         const sendData = {
           ...this.comment,
-          place: { id: this.place.id }
-        }
-        await createComment(sendData)
-        this.form.orderDay = getDay(Date.now())
-        await this.getData(this.form.orderDay)
-        this.$vmess.success('Cảm ơn bạn đã gửi đánh giá')
+          place: { id: this.place.id },
+        };
+        await createComment(sendData);
+        this.form.orderDay = getDay(Date.now());
+        await this.getData(this.form.orderDay);
+        this.$vmess.success("Cảm ơn bạn đã gửi đánh giá");
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     },
 
     async _getPrice() {
-      const formData = this._createFormData()
-      const res = await applyVoucher(formData)
+      const formData = this._createFormData();
+      const res = await applyVoucher(formData);
       this.price = {
         ...res.data,
-        moneyRes: this._getMoney(res.data)
-      }
+        moneyRes: this._getMoney(res.data),
+      };
     },
 
     async _placeOrder() {
-      const formData = this._createFormData()
+      const formData = this._createFormData();
 
-      if (!this.$store.getters['token']) {
-        return this.$vmess.error('Xin vui lòng đăng nhập để thực hiện chức năng này')
+      if (!this.$store.getters["token"]) {
+        return this.$vmess.error(
+          "Xin vui lòng đăng nhập để thực hiện chức năng này"
+        );
       }
 
-      if (this.price.moneyRes > this.$store.getters['money']) {
-        this.$vmess.error('Bạn không đủ tiền để đặt sân! Hãy nạp thêm tiền để tiếp tục')
-        return false
+      if (this.price.moneyRes > this.$store.getters["money"]) {
+        this.$vmess.error(
+          "Bạn không đủ tiền để đặt sân! Hãy nạp thêm tiền để tiếp tục"
+        );
+        return false;
       }
 
-      await order(formData)
-      this.price = {}
-      this._resetForm()
-      this.form.orderDay = getDay(Date.now())
-      await this.getData(this.form.orderDay)
+      await order(formData);
+      this.price = {};
+      this._resetForm();
+      this.form.orderDay = getDay(Date.now());
+      await this.getData(this.form.orderDay);
 
-      this.$vmess.success('Chúc mừng bạn đã đặt sân thành công!!')
+      this.$vmess.success("Chúc mừng bạn đã đặt sân thành công!!");
     },
 
     _createFormData() {
       return {
         ...this.form,
         services: this.form.services?.map((item) => {
-          return this.place.services[item]
+          return this.place.services[item];
         }),
 
         voucher: this.form.voucher?.map((item) => {
-          return this.place.voucherCreate[item]
+          return this.place.voucherCreate[item];
         }),
 
         place: {
-          id: this.place.id
-        }
-      }
+          id: this.place.id,
+        },
+      };
     },
 
     _getMoney(data) {
-      const moneyRes = Number(data.money) + Number(data.gasFee) - Number(data.moneyDown)
+      const moneyRes =
+        Number(data.money) + Number(data.gasFee) - Number(data.moneyDown);
       if (moneyRes >= 0) {
-        return moneyRes
+        return moneyRes;
       } else {
-        return 0
+        return 0;
       }
     },
 
     _resetForm() {
       this.form = {
-        orderDay: '',
+        orderDay: "",
         timeBooks: [],
         services: [],
         voucher: [],
-        phoneNumber: ''
-      }
+        phoneNumber: "",
+      };
     },
 
     async _getTime(day) {
-      this.time = []
-      const res = await getTime(this.$route.params.id, { day })
+      this.time = [];
+      const res = await getTime(this.$route.params.id, { day });
       if (res.data.data.messgae) {
-        this.isDayOff = true
-        this.message = res.data.data.messgae
-        return false
+        this.isDayOff = true;
+        this.message = res.data.data.messgae;
+        return false;
       }
-      this.isDayOff = false
-      this.time = res.data.data
+      this.isDayOff = false;
+      this.time = res.data.data;
     },
 
-    isVoucherAvailable(isActive, endDate) {
-      const now = moment(Date.now()).format('yyyy/MM/dd')
-      return moment(endDate).isBefore(now) && isActive
-    }
-  }
-}
+    isVoucherAvailable(isActive, endDate, amount) {
+      if (!isActive) return false;
+      if (amount <= 0) return false;
+      if (new Date(endDate) < new Date()) return false;
+      return true;
+    },
+  },
+};
 </script>
 <style lang="css" scoped>
 .detail-items {
@@ -441,7 +451,8 @@ export default {
 }
 
 .fixed-bar {
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px,
+    rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
 }
 
 .icon-class {

@@ -25,20 +25,34 @@
 
           <template #time="{ row }">
             <div>
-              <el-tag v-for="item in row.time" :key="item" class="mb-2 mr-2" type="success">{{ item }}</el-tag>
+              <el-tag
+                v-for="item in row.time"
+                :key="item"
+                class="mb-2 mr-2"
+                type="success"
+                >{{ item }}</el-tag
+              >
             </div>
           </template>
 
           <template #totalMoney="{ row }">
             <div>
-              <p class="text-center" v-if="row.totalMoney">{{ row.totalMoney | formatMoney }}</p>
+              <p class="text-center" v-if="row.totalMoney">
+                {{ row.totalMoney | formatMoney }}
+              </p>
               <p class="text-center" v-else>0 VND</p>
             </div>
           </template>
 
           <template #action="{ pos }">
             <div class="text-center">
-              <el-button type="danger" class="bg-[#F56C6C]" icon="el-icon-warning" @click="reportOrder(pos)" circle>
+              <el-button
+                type="danger"
+                class="bg-[#F56C6C]"
+                icon="el-icon-warning"
+               @click="open(pos)"
+                circle
+              >
               </el-button>
             </div>
           </template>
@@ -50,10 +64,10 @@
 
 <!-- eslint-disable no-unused-vars -->
 <script>
-import { getOrder, reportOrder } from '@/api/order'
+import { getOrder, reportOrder } from "@/api/order";
 export default {
   async created() {
-    await this.getData()
+    await this.getData();
   },
 
   data() {
@@ -69,98 +83,119 @@ export default {
 
       cols: [
         {
-          prop: 'name',
-          label: 'Sân',
-          minWidth: '200'
+          prop: "name",
+          label: "Sân",
+          minWidth: "200",
         },
         {
-          prop: 'time',
-          label: 'Thời gian',
-          minWidth: '200'
+          prop: "time",
+          label: "Thời gian",
+          minWidth: "200",
         },
         {
-          prop: 'totalMoney',
-          label: 'Tổng tiền',
-          minWidth: '100'
+          prop: "totalMoney",
+          label: "Tổng tiền",
+          minWidth: "100",
         },
         {
-          prop: 'status',
-          label: 'Trạng thái',
-          minWidth: '100'
+          prop: "status",
+          label: "Trạng thái",
+          minWidth: "100",
         },
         {
-          prop: 'dayOrder',
-          label: 'Ngày đặt',
-          minWidth: '100'
+          prop: "dayOrder",
+          label: "Ngày đặt",
+          minWidth: "100",
         },
         {
-          prop: 'action',
-          label: '',
-          minWidth: '100'
-        }
-      ]
-    }
+          prop: "action",
+          label: "",
+          minWidth: "100",
+        },
+      ],
+    };
   },
 
   methods: {
+    open() {
+      this.$prompt("Please input your e-mail", "Tip", {
+        confirmButtonText: "OK",
+        cancelButtonText: "Cancel",
+        inputPattern:
+          /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        inputErrorMessage: "Invalid Email",
+      })
+        .then(({ value }) => {
+          this.$message({
+            type: "success",
+            message: "Your email is:" + value,
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "Input canceled",
+          });
+        });
+    },
     async changePage(page) {
-      this.page = page
-      await this.getData()
+      this.page = page;
+      await this.getData();
     },
 
     async getData() {
       try {
-        this.results = []
+        this.results = [];
         const res = await getOrder({
           pageSize: this.limit,
-          page: this.page
-        })
+          page: this.page,
+        });
         if (res.data.records.length) {
-          this.rawData = res.data.records
+          this.rawData = res.data.records;
           this.results = res.data.records.map((item) => {
             return {
               dayOrder: item.dayOrder,
               status: item.status,
               name: item.place?.name,
               time: this._getTime(item.timeBlocks),
-              totalMoney: this._getMoney(item)
-            }
-          })
-          this.total = res.data.total
+              totalMoney: item.totalPrice,
+            };
+          });
+          this.total = res.data.total;
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
 
     async reportOrder(pos) {
       try {
-        const sendData = this.rawData[pos]
-        console.log(sendData)
+        const sendData = this.rawData[pos];
+        console.log(sendData);
         await reportOrder({
           ...sendData,
           services: sendData.place.services,
           orderDay: sendData.dayOrder,
-          timeBooks: sendData.timeBlocks
-        })
-        this.$vmess.success('Đã gửi báo cáo thành công')
+          timeBooks: sendData.timeBlocks,
+        });
+        this.$vmess.success("Đã gửi báo cáo thành công");
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
 
     _getTime(times) {
-      if (!times) return ''
+      if (!times) return "";
       return times.map((item) => {
-        return item.timeStart
-      })
+        return item.timeStart;
+      });
     },
 
     _getMoney(money) {
-      return money.money + money.gasFee - money.downPrice
-    }
-  }
-}
+      return money.money + money.gasFee - money.downPrice;
+    },
+  },
+};
 </script>
 <style lang="css" scoped>
 .header::before {
