@@ -92,6 +92,17 @@ const routes = [
     ]
   },
   {
+    path: '/user',
+    component: Home,
+    children: [
+      {
+        path: '',
+        name: 'UserInfor',
+        component: () => import('@/views/user/Infor.vue')
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'Login',
     // route level code-splitting

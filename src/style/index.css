@@ -54,3 +54,11 @@
   -webkit-transform: translateY(-50%) skew(-15deg);
   transform: translateY(-50%) skew(-15deg);
 }
+
+.card-item {
+  border: 1px solid #ededed;
+  padding: 0.5em;
+  border-radius: 10px;
+  margin-bottom: 1em;
+  cursor: pointer;
+}

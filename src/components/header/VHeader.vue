@@ -47,6 +47,9 @@
             <el-dropdown-item @click.native="$router.push({ name: 'PaymentHistory' })">
               <span style="display: block">Lịch sử đặt hàng</span>
             </el-dropdown-item>
+            <el-dropdown-item @click.native="$router.push({ name: 'UserInfor' })">
+              <span style="display: block">Thông tin cá nhân</span>
+            </el-dropdown-item>
             <el-dropdown-item @click.native="logout">
               <span style="display: block">Đăng xuất</span>
             </el-dropdown-item>

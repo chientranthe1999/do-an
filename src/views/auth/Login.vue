@@ -54,17 +54,15 @@ export default {
             email: this.form.email,
             password: this.form.password
           })
-
-          if (this.$route.query.redirect) {
-            this.$router.push(this.$route.query.redirect)
-          } else {
-            this.$router.push('/home')
-          }
-
           this.$vmess.success('Đăng nhập thành công')
+
+          // if (this.$route.query.redirect) {
+          //   this.$router.push(this.$route.query.redirect)
+          // }
+          return this.$router.push('/home')
         }
       } catch (e) {
-        this.$vmess.error(e?.response?.data?.message || 'Đăng nhập thất bại')
+        this.$vmess.error(e?.response?.data?.message || e)
       } finally {
         this.loading = false
       }

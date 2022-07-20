@@ -94,12 +94,6 @@ export default {
 }
 
 .card-item {
-  border: 1px solid #ededed;
-  padding: 0.5em;
-  border-radius: 10px;
-  margin-bottom: 1em;
-  cursor: pointer;
-
   > p {
     margin-bottom: 0.5rem;
   }

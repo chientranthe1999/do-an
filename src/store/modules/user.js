@@ -6,7 +6,14 @@ const state = {
   token: getToken(),
   name: null,
   roles: null,
-  money: 0
+  money: 0,
+  user: {
+    name: '',
+    phoneNumber: '',
+    email: '',
+    money: 0,
+    address: ''
+  }
 }
 
 const mutations = {
@@ -24,6 +31,10 @@ const mutations = {
 
   SET_MONEY: (state, money) => {
     state.money = money
+  },
+
+  SET_USER: (state, user) => {
+    state.user = user
   }
 }
 
@@ -34,6 +45,9 @@ const actions = {
       login({ email: email.trim(), password: password })
         .then((res) => {
           const { data } = res
+          if (data.role !== 1) {
+            return reject('Vui lòng đăng nhập với tài khoản user')
+          }
           commit('SET_TOKEN', data.token)
           setToken(data.token)
           resolve()
@@ -58,6 +72,12 @@ const actions = {
           commit('SET_ROLES', role)
           commit('SET_NAME', fullName)
           commit('SET_MONEY', customer.money)
+          commit('SET_USER', {
+            name: fullName,
+            phoneNumber: data.phoneNumber,
+            money: customer.money,
+            address: data.address
+          })
           resolve(data)
         })
         .catch((error) => {
@@ -70,6 +90,7 @@ const actions = {
     commit('SET_TOKEN', '')
     commit('SET_ROLES', null)
     commit('SET_NAME', null)
+    commit('SET_USER', {})
     removeToken()
     resetRouter()
   },
